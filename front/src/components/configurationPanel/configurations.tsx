@@ -1,3 +1,4 @@
+import ButtonComponent from '../button'
 import DropDownComponent from './drop-down'
 import InputComponent from './input'
 interface Options {
@@ -9,6 +10,11 @@ interface ConfigurationComponentProps {
   setCutStart: React.Dispatch<React.SetStateAction<string>>
   cutEnd: string
   setCutEnd: React.Dispatch<React.SetStateAction<string>>
+  volume: string
+  setVolume: React.Dispatch<React.SetStateAction<string>>
+  format: string
+  setFormat: React.Dispatch<React.SetStateAction<string>>
+  handleConvert: () => void
 }
 
 const volumeOptions: Options[] = [
@@ -30,7 +36,7 @@ const formatOptions: Options[] = [
   { name: 'Wav', value: '.wav' }
 ]
 
-export default function ConfigurationComponent ({ cutStart, setCutStart, cutEnd, setCutEnd }: ConfigurationComponentProps) {
+export default function ConfigurationComponent ({ cutStart, setCutStart, cutEnd, setCutEnd, volume, setVolume, format, setFormat, handleConvert }: ConfigurationComponentProps) {
   return (
     <div>
       <InputComponent
@@ -45,12 +51,17 @@ export default function ConfigurationComponent ({ cutStart, setCutStart, cutEnd,
       />
       <DropDownComponent
         label='Change Volume'
+        value={volume}
+        onChange={setVolume}
         options={volumeOptions}
       />
       <DropDownComponent
         label='Convert To'
+        value={format}
+        onChange={setFormat}
         options={formatOptions}
       />
+      <ButtonComponent label="Convert" onClick={handleConvert} />
 
     </div>
   )

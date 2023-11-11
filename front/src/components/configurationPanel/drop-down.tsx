@@ -8,10 +8,12 @@ interface Options {
 }
 interface DropDownComponentProps {
   label: string
+  value: string
+  onChange: () => void
   options: Options[]
 }
 
-export default function DropDownComponent ({ label, options }: DropDownComponentProps) {
+export default function DropDownComponent ({ label, value, onChange, options }: DropDownComponentProps) {
   const [selected, setSelected] = useState(options[0])
 
   return (

@@ -1,14 +1,16 @@
 import { useState, useRef, useMemo } from 'react'
 import Plyr, { type APITypes, type PlyrOptions } from 'plyr-react'
-import ConfigurationComponent from './configurations'
+import ConfigurationComponent from './configurationPanel/configurations'
 import ButtonComponent from './button'
-import { formatTime } from './utils'
+import { formatTime } from '../common/utils'
 
 export default function Conversor () {
   const playerRef = useRef<APITypes>(null)
   const [videoSrc, setVideoSrc] = useState('')
   const [cutStart, setCutStart] = useState<string>('00:00:00')
   const [cutEnd, setCutEnd] = useState<string>('00:00:00')
+  const [volume, setVolume] = useState<string>('None')
+  const [format, setFormat] = useState<string>('None')
 
   const plyrOptions: PlyrOptions = {
     loop: { active: true },
@@ -79,6 +81,15 @@ export default function Conversor () {
       console.log('url changed')
     }
   }
+
+  const handleConvert = () => {
+    // console.log(videoSrc)
+    console.log('------------------------')
+    console.log(cutStart)
+    console.log(cutEnd)
+    console.log(volume)
+    console.log(format)
+  }
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <div className="flex flex-wrap justify-center gap-4 mb-4">
@@ -108,6 +119,11 @@ export default function Conversor () {
             setCutStart={setCutStart}
             cutEnd={cutEnd}
             setCutEnd={setCutEnd}
+            handleConvert={handleConvert}
+            volume={volume}
+            setVolume={setVolume}
+            format={format}
+            setFormat={setFormat}
            />
         </div>
       </div>
