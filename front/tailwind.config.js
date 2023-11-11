@@ -5,7 +5,14 @@ export default {
     './src/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors:{
+        plyrColor: '#00b2ff'
+      },
+      borderColor:{
+        plyrColor: '#00b2ff'
+      }
+    },
   },
   plugins: [],
 }
