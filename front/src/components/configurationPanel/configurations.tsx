@@ -6,6 +6,8 @@ interface Options {
   value: string
 }
 interface ConfigurationComponentProps {
+  filePath: string
+  setFilePath: React.Dispatch<React.SetStateAction<string>>
   cutStart: string
   setCutStart: React.Dispatch<React.SetStateAction<string>>
   cutEnd: string
@@ -36,9 +38,14 @@ const formatOptions: Options[] = [
   { name: 'Wav', value: '.wav' }
 ]
 
-export default function ConfigurationComponent ({ cutStart, setCutStart, cutEnd, setCutEnd, volume, setVolume, format, setFormat, handleConvert }: ConfigurationComponentProps) {
+export default function ConfigurationComponent ({ filePath, setFilePath, cutStart, setCutStart, cutEnd, setCutEnd, volume, setVolume, format, setFormat, handleConvert }: ConfigurationComponentProps) {
   return (
     <div>
+      <InputComponent
+        label='File Path'
+        value={filePath}
+        onChange={(event: any) => { setFilePath(event.target.value) }}
+      />
       <InputComponent
         label='Time InitCut - HH:MM:SS'
         value={cutStart}

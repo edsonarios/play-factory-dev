@@ -10,11 +10,13 @@ interface Options {
 
 export default function Conversor () {
   const playerRef = useRef<APITypes>(null)
-  const [videoSrc, setVideoSrc] = useState('')
+  const [videoName, setVideoName] = useState<string>('')
+  const [videoSrc, setVideoSrc] = useState<string>('')
   const [cutStart, setCutStart] = useState<string>('00:00:00')
   const [cutEnd, setCutEnd] = useState<string>('00:00:00')
   const [volume, setVolume] = useState<Options>({ name: 'None', value: '' })
   const [format, setFormat] = useState<Options>({ name: 'None', value: '' })
+  const [filePath, setFilePath] = useState<string>('')
 
   const plyrOptions: PlyrOptions = {
     loop: { active: true },
@@ -66,8 +68,6 @@ export default function Conversor () {
     />
   ), [playerRef, videoSrc])
 
-  // console.log(cutStart, cutEnd, videoSrc)
-
   const handleDragOver = (event: any) => {
     event.preventDefault()
   }
@@ -82,13 +82,16 @@ export default function Conversor () {
       setCutEnd('00:00:00')
       setCutStart('00:00:00')
       setVideoSrc(url)
+      setVideoName(file.name)
       console.log('url changed')
     }
   }
 
   const handleConvert = () => {
-    // console.log(videoSrc)
     console.log('------------------------')
+    console.log(videoName)
+    console.log(videoSrc)
+    console.log(filePath)
     console.log(cutStart)
     console.log(cutEnd)
     console.log(volume)
@@ -119,6 +122,8 @@ export default function Conversor () {
         {/* Configurations */}
         <div className="w-1/6">
           <ConfigurationComponent
+            filePath={filePath}
+            setFilePath={setFilePath}
             cutStart={cutStart}
             setCutStart={setCutStart}
             cutEnd={cutEnd}
