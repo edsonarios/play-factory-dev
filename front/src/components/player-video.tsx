@@ -3,6 +3,7 @@ import Plyr, { type APITypes, type PlyrOptions } from 'plyr-react'
 import ConfigurationComponent from './configurationPanel/configurations'
 import ButtonComponent from './button'
 import { formatTime } from '../common/utils'
+import axios from 'axios'
 interface Options {
   name: string
   value: string
@@ -87,7 +88,7 @@ export default function Conversor () {
     }
   }
 
-  const handleConvert = () => {
+  const handleConvert = async () => {
     console.log('------------------------')
     console.log(videoName)
     console.log(videoSrc)
@@ -96,7 +97,23 @@ export default function Conversor () {
     console.log(cutEnd)
     console.log(volume)
     console.log(format)
+    const requestData = {
+      videoName,
+      filePath,
+      cutStart,
+      cutEnd,
+      volume: volume.value,
+      format: format.value
+    }
+
+    try {
+      const response = await axios.post('http://localhost:3100/conversor', requestData)
+      console.log('Resultado de la conversión:', response.data)
+    } catch (error) {
+      console.error('Error en la solicitud:', error)
+    }
   }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <div className="flex flex-wrap justify-center gap-4 mb-4">

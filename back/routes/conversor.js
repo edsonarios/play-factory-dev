@@ -10,22 +10,23 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', async (req, res) => {
-  const body = req.body
-  console.log(body)
+  const { videoName, filePath, cutStart, cutEnd, volume, format } = req.body
+  console.log(req.body)
   const destinationFolder = path.join(__dirname, 'converted')
   if (!fs.existsSync(destinationFolder)) {
     fs.mkdirSync(destinationFolder)
   }
-
-  // exec(`python D:/Code/tool-download/scripts-to-download/list_parts.py "${nameVideo}"`, (error, stdout, stderr) => {
-  //   if (error) {
-  //     console.error(`Error when execute script: ${error}`)
-  //     return
-  //   }
-  //   console.error(`stderr: ${stderr}`)
-  //   console.log(pc.green(`stdout: ${stdout}`))
-  //   console.log('Finished')
-  // })
+  const commandToExecute = `ffmpeg -ss ${cutStart} -t ${cutEnd} -i "${filePath}\\${videoName}" -c copy "${filePath}\\convertido.mp4" -y`
+  console.log(commandToExecute)
+  exec(commandToExecute, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error when execute script: ${error}`)
+      return
+    }
+    console.error(`stderr: ${stderr}`)
+    console.log(pc.green(`stdout: ${stdout}`))
+    console.log('Finished')
+  })
   res.send('Converted')
 })
 
