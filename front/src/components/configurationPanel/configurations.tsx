@@ -10,15 +10,15 @@ interface ConfigurationComponentProps {
   setCutStart: React.Dispatch<React.SetStateAction<string>>
   cutEnd: string
   setCutEnd: React.Dispatch<React.SetStateAction<string>>
-  volume: string
-  setVolume: React.Dispatch<React.SetStateAction<string>>
-  format: string
-  setFormat: React.Dispatch<React.SetStateAction<string>>
+  volume: Options
+  setVolume: React.Dispatch<React.SetStateAction<Options>>
+  format: Options
+  setFormat: React.Dispatch<React.SetStateAction<Options>>
   handleConvert: () => void
 }
 
 const volumeOptions: Options[] = [
-  { name: 'None', value: '0' },
+  { name: 'None', value: '' },
   { name: '0.5 Volume', value: '0.5' },
   { name: '2 Volume', value: '2' },
   { name: '3 Volume', value: '3' },
@@ -52,13 +52,13 @@ export default function ConfigurationComponent ({ cutStart, setCutStart, cutEnd,
       <DropDownComponent
         label='Change Volume'
         value={volume}
-        onChange={setVolume}
+        setValue={setVolume}
         options={volumeOptions}
       />
       <DropDownComponent
         label='Convert To'
         value={format}
-        onChange={setFormat}
+        setValue={setFormat}
         options={formatOptions}
       />
       <ButtonComponent label="Convert" onClick={handleConvert} />

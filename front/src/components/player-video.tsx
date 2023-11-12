@@ -3,14 +3,18 @@ import Plyr, { type APITypes, type PlyrOptions } from 'plyr-react'
 import ConfigurationComponent from './configurationPanel/configurations'
 import ButtonComponent from './button'
 import { formatTime } from '../common/utils'
+interface Options {
+  name: string
+  value: string
+}
 
 export default function Conversor () {
   const playerRef = useRef<APITypes>(null)
   const [videoSrc, setVideoSrc] = useState('')
   const [cutStart, setCutStart] = useState<string>('00:00:00')
   const [cutEnd, setCutEnd] = useState<string>('00:00:00')
-  const [volume, setVolume] = useState<string>('None')
-  const [format, setFormat] = useState<string>('None')
+  const [volume, setVolume] = useState<Options>({ name: 'None', value: '' })
+  const [format, setFormat] = useState<Options>({ name: 'None', value: '' })
 
   const plyrOptions: PlyrOptions = {
     loop: { active: true },
