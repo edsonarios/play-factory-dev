@@ -6,7 +6,7 @@ const { exec } = require('child_process')
 const pc = require('picocolors')
 
 app.get('/', (req, res) => {
-  res.send('Download some part of video .ts')
+  res.send('Convert video')
 })
 
 app.post('/', async (req, res) => {
@@ -16,7 +16,32 @@ app.post('/', async (req, res) => {
   if (!fs.existsSync(destinationFolder)) {
     fs.mkdirSync(destinationFolder)
   }
-  const commandToExecute = `ffmpeg -ss ${cutStart} -t ${cutEnd} -i "${filePath}\\${videoName}" -c copy "${filePath}\\convertido.mp4" -y`
+  let commandToExecute = `ffmpeg -ss ${cutStart} `
+
+  if (cutEnd !== '00:00:00') {
+    commandToExecute += `-to ${cutEnd} `
+  }
+
+  commandToExecute += `-i "${filePath}\\${videoName}" `
+
+  if (volume) {
+    commandToExecute += `-filter:a "volume=${volume}" `
+  }
+
+  if (format) {
+    const baseName = path.basename(videoName, path.extname(videoName))
+    const outputFileName = `${baseName}-converted.${format}`
+    commandToExecute += `"${filePath}\\${outputFileName}" `
+  } else {
+    if (!volume) {
+      commandToExecute += '-c copy '
+    }
+    const baseName = path.basename(videoName, path.extname(videoName))
+    const extName = path.extname(videoName)
+    commandToExecute += `"${filePath}\\${baseName}-converted${extName}" `
+  }
+
+  commandToExecute += '-y'
   console.log(commandToExecute)
   exec(commandToExecute, (error, stdout, stderr) => {
     if (error) {

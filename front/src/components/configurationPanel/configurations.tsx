@@ -30,12 +30,12 @@ const volumeOptions: Options[] = [
 
 const formatOptions: Options[] = [
   { name: 'None', value: '' },
-  { name: 'Mp4', value: '.mp4' },
-  { name: 'Flv', value: '.flv' },
-  { name: 'MKV', value: '.mkv' },
-  { name: 'Ts', value: '.ts' },
-  { name: 'Mp3', value: '.mp3' },
-  { name: 'Wav', value: '.wav' }
+  { name: 'Mp4', value: 'mp4' },
+  { name: 'Flv', value: 'flv' },
+  { name: 'MKV', value: 'mkv' },
+  { name: 'Ts', value: 'ts' },
+  { name: 'Mp3', value: 'mp3' },
+  { name: 'Wav', value: 'wav' }
 ]
 
 export default function ConfigurationComponent ({ filePath, setFilePath, cutStart, setCutStart, cutEnd, setCutEnd, volume, setVolume, format, setFormat, handleConvert }: ConfigurationComponentProps) {
