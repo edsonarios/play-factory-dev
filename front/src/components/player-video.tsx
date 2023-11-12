@@ -81,6 +81,7 @@ export default function Conversor () {
       const file = files[0]
       const url = URL.createObjectURL(file)
       setCutEnd('00:00:00')
+
       setCutStart('00:00:00')
       setVideoSrc(url)
       setVideoName(file.name)
@@ -88,7 +89,8 @@ export default function Conversor () {
     }
   }
 
-  const handleConvert = async () => {
+  const handleConvert = async (event: any) => {
+    event.preventDefault()
     console.log('------------------------')
     console.log(videoName)
     console.log(videoSrc)

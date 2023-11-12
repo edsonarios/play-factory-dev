@@ -38,38 +38,64 @@ const formatOptions: Options[] = [
   { name: 'Wav', value: 'wav' }
 ]
 
-export default function ConfigurationComponent ({ filePath, setFilePath, cutStart, setCutStart, cutEnd, setCutEnd, volume, setVolume, format, setFormat, handleConvert }: ConfigurationComponentProps) {
+export default function ConfigurationComponent ({
+  filePath,
+  setFilePath,
+  cutStart,
+  setCutStart,
+  cutEnd,
+  setCutEnd,
+  volume,
+  setVolume,
+  format,
+  setFormat,
+  handleConvert
+}: ConfigurationComponentProps) {
   return (
     <div>
-      <InputComponent
-        label='File Path'
-        value={filePath}
-        onChange={(event: any) => { setFilePath(event.target.value) }}
-      />
-      <InputComponent
-        label='Time InitCut - HH:MM:SS'
-        value={cutStart}
-        onChange={(event: any) => { setCutStart(event.target.value) }}
-      />
-      <InputComponent
-        label='Time FinishCut - HH:MM:SS'
-        value={cutEnd}
-        onChange={(event: any) => { setCutEnd(event.target.value) }}
-      />
-      <DropDownComponent
-        label='Change Volume'
-        value={volume}
-        setValue={setVolume}
-        options={volumeOptions}
-      />
-      <DropDownComponent
-        label='Convert To'
-        value={format}
-        setValue={setFormat}
-        options={formatOptions}
-      />
-      <ButtonComponent label="Convert" onClick={handleConvert} />
-
+      <form onSubmit={handleConvert}>
+        <InputComponent
+          label="File Path"
+          value={filePath}
+          onChange={(event: any) => {
+            setFilePath(event.target.value)
+          }}
+          required={true}
+        />
+        <InputComponent
+          label="Time InitCut - HH:MM:SS"
+          value={cutStart}
+          onChange={(event: any) => {
+            setCutStart(event.target.value)
+          }}
+        />
+        <InputComponent
+          label="Time FinishCut - HH:MM:SS"
+          value={cutEnd}
+          onChange={(event: any) => {
+            setCutEnd(event.target.value)
+          }}
+        />
+        <DropDownComponent
+          label="Change Volume"
+          value={volume}
+          setValue={setVolume}
+          options={volumeOptions}
+        />
+        <DropDownComponent
+          label="Convert To"
+          value={format}
+          setValue={setFormat}
+          options={formatOptions}
+        />
+        <ButtonComponent label="Convert" type='submit' />
+        {/* <button
+          type='submit'
+          className="bg-plyrColor hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-md text-sm mr-2"
+        >
+          Convert
+        </button> */}
+      </form>
     </div>
   )
 }
