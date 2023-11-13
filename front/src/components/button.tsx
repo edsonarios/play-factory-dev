@@ -1,7 +1,6 @@
 interface ButtonComponentProps {
   label: string
   onClick?: () => void
-  // submit: React.ButtonHTMLAttributes<HTMLButtonElement>.type?: "submit" | "button" | "reset" | undefined
   type?: 'submit' | 'button' | 'reset' | undefined
 }
 

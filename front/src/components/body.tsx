@@ -10,7 +10,7 @@ interface Options {
   value: string
 }
 
-export default function Conversor () {
+export default function BodyPlayerComponent () {
   const playerRef = useRef<APITypes>(null)
   const playerSecondRef = useRef<APITypes>(null)
   const [videoName, setVideoName] = useState<string>('')
@@ -28,14 +28,6 @@ export default function Conversor () {
     hideControls: false,
     keyboard: {
       global: true
-    }
-  }
-  const plyrSecondOptions: PlyrOptions = {
-    loop: { active: true },
-    autoplay: true,
-    hideControls: false,
-    keyboard: {
-      global: false
     }
   }
 
@@ -99,7 +91,7 @@ export default function Conversor () {
             }
           ]
         }}
-        options={plyrSecondOptions}
+        options={{ ...plyrOptions, keyboard: { global: false } }}
       />
     ),
     [playerSecondRef, videoSecondSrc]
@@ -161,7 +153,7 @@ export default function Conversor () {
     }
   }
 
-  function classNames (...classes) {
+  function classNames (...classes: string[]) {
     return classes.filter(Boolean).join(' ')
   }
 
@@ -184,7 +176,6 @@ export default function Conversor () {
               >
                 Player 1
               </Tab>
-              {/* <Tab className='w-full rounded-lg py-2.5 text-sm font-medium leading-5 ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2 hover:bg-white/[0.12] hover:text-white'> */}
               <Tab
                 className={({ selected }) =>
                   classNames(
@@ -284,6 +275,7 @@ export default function Conversor () {
             setCutStart={setCutStart}
             cutEnd={cutEnd}
             setCutEnd={setCutEnd}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             handleConvert={handleConvert}
             volume={volume}
             setVolume={setVolume}
