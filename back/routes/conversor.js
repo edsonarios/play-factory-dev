@@ -43,15 +43,15 @@ app.post('/', async (req, res) => {
 
   commandToExecute += '-y'
   console.log(commandToExecute)
-  // exec(commandToExecute, (error, stdout, stderr) => {
-  //   if (error) {
-  //     console.error(`Error when execute script: ${error}`)
-  //     return
-  //   }
-  //   console.error(`stderr: ${stderr}`)
-  //   console.log(pc.green(`stdout: ${stdout}`))
-  //   console.log('Finished')
-  // })
+  exec(commandToExecute, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error when execute script: ${error}`)
+      return
+    }
+    console.error(`stderr: ${stderr}`)
+    console.log(pc.green(`stdout: ${stdout}`))
+    console.log('Finished')
+  })
   res.send('Converted')
 })
 

@@ -1,3 +1,4 @@
+import { validateNotEmptyField, validateTimeFormat } from '../../common/utils'
 import ButtonComponent from '../button'
 import DropDownComponent from './drop-down'
 import InputComponent from './input'
@@ -51,17 +52,6 @@ export default function ConfigurationComponent ({
   setFormat,
   handleConvert
 }: ConfigurationComponentProps) {
-  const validateFilePath = (value: string) => {
-    if (value === '') return 'File path is required.'
-    return ''
-  }
-
-  const validateTimeFormat = (value: string) => {
-    if (value.match(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/) == null) {
-      return 'Invalid time format.'
-    }
-    return ''
-  }
   return (
     <div>
       <form onSubmit={handleConvert}>
@@ -71,7 +61,7 @@ export default function ConfigurationComponent ({
           onChange={(event: any) => {
             setFilePath(event.target.value)
           }}
-          validate={validateFilePath}
+          validate={validateNotEmptyField}
           required={true}
         />
         <InputComponent

@@ -2,7 +2,7 @@ import { useState, useRef, useMemo } from 'react'
 import Plyr, { type APITypes, type PlyrOptions } from 'plyr-react'
 import ConfigurationComponent from './configurationPanel/configurations'
 import ButtonComponent from './button'
-import { formatTime } from '../common/utils'
+import { formatTime, validateDatas } from '../common/utils'
 import axios from 'axios'
 interface Options {
   name: string
@@ -32,8 +32,6 @@ export default function Conversor () {
     if (playerRef?.current !== null) {
       const currenTime = playerRef.current.plyr.currentTime
       setCutStart(formatTime(currenTime))
-      console.log(currenTime)
-      console.log(formatTime(currenTime))
     }
   }
 
@@ -41,8 +39,6 @@ export default function Conversor () {
     if (playerRef?.current !== null) {
       const currenTime = playerRef.current.plyr.currentTime
       setCutEnd(formatTime(currenTime))
-      console.log(currenTime)
-      console.log(formatTime(currenTime))
     }
   }
 
@@ -81,24 +77,14 @@ export default function Conversor () {
       const file = files[0]
       const url = URL.createObjectURL(file)
       setCutEnd('00:00:00')
-
       setCutStart('00:00:00')
       setVideoSrc(url)
       setVideoName(file.name)
-      console.log('url changed')
     }
   }
 
   const handleConvert = async (event: any) => {
     event.preventDefault()
-    console.log('------------------------')
-    console.log(videoName)
-    console.log(videoSrc)
-    console.log(filePath)
-    console.log(cutStart)
-    console.log(cutEnd)
-    console.log(volume)
-    console.log(format)
     const requestData = {
       videoName,
       filePath,
@@ -107,12 +93,17 @@ export default function Conversor () {
       volume: volume.value,
       format: format.value
     }
-
+    console.log(requestData)
+    const validDatas = validateDatas(requestData)
+    if (validDatas !== '') {
+      alert(`Error ${validDatas}`)
+      return
+    }
     try {
       const response = await axios.post('http://localhost:3100/conversor', requestData)
-      console.log('Resultado de la conversión:', response.data)
+      console.log('Result', response.data)
     } catch (error) {
-      console.error('Error en la solicitud:', error)
+      console.error('Error', error)
     }
   }
 
