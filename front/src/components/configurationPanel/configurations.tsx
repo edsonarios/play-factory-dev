@@ -51,6 +51,17 @@ export default function ConfigurationComponent ({
   setFormat,
   handleConvert
 }: ConfigurationComponentProps) {
+  const validateFilePath = (value: string) => {
+    if (value === '') return 'File path is required.'
+    return ''
+  }
+
+  const validateTimeFormat = (value: string) => {
+    if (value.match(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/) == null) {
+      return 'Invalid time format.'
+    }
+    return ''
+  }
   return (
     <div>
       <form onSubmit={handleConvert}>
@@ -60,6 +71,7 @@ export default function ConfigurationComponent ({
           onChange={(event: any) => {
             setFilePath(event.target.value)
           }}
+          validate={validateFilePath}
           required={true}
         />
         <InputComponent
@@ -68,6 +80,8 @@ export default function ConfigurationComponent ({
           onChange={(event: any) => {
             setCutStart(event.target.value)
           }}
+          validate={validateTimeFormat}
+          required={true}
         />
         <InputComponent
           label="Time FinishCut - HH:MM:SS"
@@ -75,6 +89,8 @@ export default function ConfigurationComponent ({
           onChange={(event: any) => {
             setCutEnd(event.target.value)
           }}
+          validate={validateTimeFormat}
+          required={true}
         />
         <DropDownComponent
           label="Change Volume"
@@ -89,12 +105,6 @@ export default function ConfigurationComponent ({
           options={formatOptions}
         />
         <ButtonComponent label="Convert" type='submit' />
-        {/* <button
-          type='submit'
-          className="bg-plyrColor hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-md text-sm mr-2"
-        >
-          Convert
-        </button> */}
       </form>
     </div>
   )
