@@ -108,6 +108,7 @@ export default function BodyPlayerComponent () {
     if (Boolean(files) && files.length > 0) {
       const file = files[0]
       const url = URL.createObjectURL(file)
+      console.log(url)
       setCutEnd('00:00:00')
       setCutStart('00:00:00')
       setVideoSrc(url)
@@ -128,6 +129,7 @@ export default function BodyPlayerComponent () {
 
   const handleConvert = async (event: any) => {
     event.preventDefault()
+    console.log('Convert')
     const requestData = {
       videoName,
       filePath,
