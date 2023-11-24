@@ -1,4 +1,6 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
+const convert = require('./src/electron/convert')
+const log = require('electron-log')
 
 function createWindow () {
   const win = new BrowserWindow({
@@ -14,3 +16,8 @@ function createWindow () {
 }
 
 app.whenReady().then(createWindow)
+log.info('Ready')
+
+ipcMain.on('convert-video', (event, requestData) => {
+  convert(requestData);
+})

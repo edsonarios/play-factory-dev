@@ -14,8 +14,6 @@ interface DropDownComponentProps {
 }
 
 export default function DropDownComponent ({ label, value, setValue, options }: DropDownComponentProps) {
-  // const [selected, setSelected] = useState(options[0])
-
   return (
     <div className="w-60 mb-4">
       <h3>{label}</h3>

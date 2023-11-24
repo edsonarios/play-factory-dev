@@ -3,8 +3,9 @@ import Plyr, { type APITypes, type PlyrOptions } from 'plyr-react'
 import ConfigurationComponent from './configurationPanel/configurations'
 import ButtonComponent from './button'
 import { formatTime, validateDatas } from '../common/utils'
-import axios from 'axios'
 import { Tab } from '@headlessui/react'
+const { ipcRenderer } = window.require('electron')
+
 interface Options {
   name: string
   value: string
@@ -123,6 +124,27 @@ export default function Conversor () {
     }
   }
 
+  const handleDropElectron = (event: any) => {
+    event.preventDefault()
+    // Use DataTransferItemList interface to access the file(s)
+    if (event.dataTransfer.items !== undefined) {
+      if (event.dataTransfer.items.length > 0 && event.dataTransfer.items[0].kind === 'file') {
+        const file = event.dataTransfer.items[0].getAsFile()
+        console.log('File Path:', file.path)
+        console.log(file)
+        const url = URL.createObjectURL(file)
+        console.log(file.name)
+        setCutEnd('00:00:00')
+        setCutStart('00:00:00')
+        setVolume({ name: 'None', value: '' })
+        setFormat({ name: 'None', value: '' })
+        setVideoName(file.name)
+        setVideoSrc(url)
+        setFilePath(file.path)
+      }
+    }
+  }
+
   const handleSecondDrop = (event: any) => {
     event.preventDefault()
     const files = event.dataTransfer.files
@@ -136,6 +158,7 @@ export default function Conversor () {
 
   const handleConvert = async (event: any) => {
     event.preventDefault()
+    console.log('from Front')
     const requestData = {
       videoName,
       filePath,
@@ -150,18 +173,10 @@ export default function Conversor () {
       alert(`Error ${validDatas}`)
       return
     }
-    try {
-      const response = await axios.post(
-        'http://localhost:3100/conversor',
-        requestData
-      )
-      console.log('Result', response.data)
-    } catch (error) {
-      console.error('Error', error)
-    }
+    ipcRenderer.send('convert-video', requestData)
   }
 
-  function classNames (...classes) {
+  function classNames (...classes: any) {
     return classes.filter(Boolean).join(' ')
   }
 
@@ -184,7 +199,6 @@ export default function Conversor () {
               >
                 Player 1
               </Tab>
-              {/* <Tab className='w-full rounded-lg py-2.5 text-sm font-medium leading-5 ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2 hover:bg-white/[0.12] hover:text-white'> */}
               <Tab
                 className={({ selected }) =>
                   classNames(
@@ -201,7 +215,7 @@ export default function Conversor () {
             </Tab.List>
             <Tab.Panels>
               <Tab.Panel>
-                <div onDragOver={handleDragOver} onDrop={handleDrop}>
+                <div onDragOver={handleDragOver} onDrop={handleDropElectron}>
                   {plyrComponent}
                   {/* Additional Controls */}
                   <h3>Additional controls:</h3>
@@ -284,6 +298,7 @@ export default function Conversor () {
             setCutStart={setCutStart}
             cutEnd={cutEnd}
             setCutEnd={setCutEnd}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             handleConvert={handleConvert}
             volume={volume}
             setVolume={setVolume}
