@@ -2,8 +2,9 @@ import { useState, useRef, useMemo } from 'react'
 import Plyr, { type APITypes, type PlyrOptions } from 'plyr-react'
 import ConfigurationComponent from './configurationPanel/configurations'
 import ButtonComponent from './button'
-import { formatTime, validateDatas } from '../common/utils'
 import { Tab } from '@headlessui/react'
+import { formatTime, validateDatas } from '@/common/utils'
+// const { ipcRenderer } = window.require('electron')
 
 interface Options {
   name: string
@@ -155,7 +156,7 @@ export default function Player () {
     }
   }
 
-  const handleConvert = async (event: any) => {
+  const handleConvert = (event: any) => {
     event.preventDefault()
     console.log('from Front')
     const requestData = {
@@ -172,7 +173,8 @@ export default function Player () {
       alert(`Error ${validDatas}`)
       return
     }
-    ipcRenderer.send('convert-video', requestData)
+    // ipcRenderer.send('convert-video', requestData)
+    console.log('should be convert')
   }
 
   function classNames (...classes: any) {

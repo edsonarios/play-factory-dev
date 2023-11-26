@@ -1,7 +1,7 @@
-import "./App.css";
-import Player from "./components/Player";
+import './App.css'
+import Player from './components/Player'
 
-function App() {
+function App () {
   return (
     <>
       <div>
@@ -11,7 +11,7 @@ function App() {
         <Player />
       </div>
     </>
-  );
+  )
 }
 
-export default App;
+export default App

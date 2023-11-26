@@ -1,7 +1,7 @@
-import { validateNotEmptyField, validateTimeFormat } from '../../common/utils'
-import ButtonComponent from '../button'
+import { validateNotEmptyField, validateTimeFormat } from '@/common/utils'
 import DropDownComponent from './drop-down'
 import InputComponent from './input'
+import ButtonComponent from './button'
 interface Options {
   name: string
   value: string

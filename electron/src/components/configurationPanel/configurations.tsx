@@ -1,7 +1,7 @@
-import { validateNotEmptyField, validateTimeFormat } from '../../common/utils'
-import ButtonComponent from '../button'
+import { validateNotEmptyField, validateTimeFormat } from '@/common/utils'
 import DropDownComponent from './drop-down'
 import InputComponent from './input'
+import ButtonComponent from '@/components/button'
 interface Options {
   name: string
   value: string
@@ -17,7 +17,7 @@ interface ConfigurationComponentProps {
   setVolume: React.Dispatch<React.SetStateAction<Options>>
   format: Options
   setFormat: React.Dispatch<React.SetStateAction<Options>>
-  handleConvert: () => void
+  handleConvert: (event: any) => void
 }
 
 const volumeOptions: Options[] = [
