@@ -4,7 +4,16 @@ import ConfigurationComponent from './configurationPanel/configurations'
 import ButtonComponent from './button'
 import { Tab } from '@headlessui/react'
 import { formatTime, validateDatas } from '@/common/utils'
-// const { ipcRenderer } = window.require('electron')
+
+interface ElectronAPI {
+  send: (channel: string, data: any) => void
+}
+
+declare global {
+  interface Window {
+    electron: ElectronAPI
+  }
+}
 
 interface Options {
   name: string
@@ -173,8 +182,7 @@ export default function Player () {
       alert(`Error ${validDatas}`)
       return
     }
-    // ipcRenderer.send('convert-video', requestData)
-    console.log('should be convert')
+    window.electron.send('convert-video', requestData)
   }
 
   function classNames (...classes: any) {
