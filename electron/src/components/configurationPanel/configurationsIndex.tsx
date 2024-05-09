@@ -1,7 +1,7 @@
 import { validateNotEmptyField, validateTimeFormat } from '@/common/utils'
 import DropDownComponent from './drop-down'
 import InputComponent from './input'
-import ButtonComponent from '@/components/button'
+import ButtonComponent from '@/components/configurationPanel/button'
 interface Options {
   name: string
   value: string
@@ -54,7 +54,10 @@ export default function ConfigurationComponent({
 }: ConfigurationComponentProps) {
   return (
     <div className="mt-4">
-      <form className="flex flex-row gap-2" onSubmit={handleConvert}>
+      <form
+        className="flex flex-row gap-x-2 justify-center items-start"
+        onSubmit={handleConvert}
+      >
         <InputComponent
           label="File Path"
           value={filePath}

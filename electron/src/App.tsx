@@ -1,8 +1,8 @@
 import './App.css'
-import Player from './components/Player'
+import Index from './components/Index'
 
 function App() {
-  return <Player />
+  return <Index />
 }
 
 export default App

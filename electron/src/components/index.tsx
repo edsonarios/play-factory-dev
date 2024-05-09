@@ -1,10 +1,12 @@
 import { useState, useRef, useMemo } from 'react'
 import Plyr, { type APITypes, type PlyrOptions } from 'plyr-react'
-import ConfigurationComponent from './configurationPanel/configurations'
-import ButtonComponent from './button'
+import ConfigurationComponent from './configurationPanel/configurationsIndex'
+import ButtonComponent from './configurationPanel/button'
 import { Tab } from '@headlessui/react'
 import { formatTime, validateDatas } from '@/common/utils'
 import { Title } from './title'
+import { TabHeader } from './player/tabHeader'
+import { Ply } from './player/player'
 
 interface ElectronAPI {
   send: (channel: string, data: any) => void
@@ -21,7 +23,7 @@ interface Options {
   value: string
 }
 
-export default function Player() {
+export default function Index() {
   const playerRef = useRef<APITypes>(null)
   const playerSecondRef = useRef<APITypes>(null)
   const [videoName, setVideoName] = useState<string>('')
@@ -189,10 +191,6 @@ export default function Player() {
     window.electron.send('convert-video', requestData)
   }
 
-  function classNames(...classes: any) {
-    return classes.filter(Boolean).join(' ')
-  }
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <Title />
@@ -200,108 +198,40 @@ export default function Player() {
         <div className="">
           <Tab.Group>
             <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
-              <Tab
-                className={({ selected }) =>
-                  classNames(
-                    'w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-gray-700',
-                    'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
-                    selected
-                      ? 'bg-white shadow'
-                      : 'text-blue-100 hover:bg-white/[0.12] hover:text-white',
-                  )
-                }
-              >
-                Player 1
-              </Tab>
-              <Tab
-                className={({ selected }) =>
-                  classNames(
-                    'w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-gray-700',
-                    'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
-                    selected
-                      ? 'bg-white shadow'
-                      : 'text-blue-100 hover:bg-white/[0.12] hover:text-white',
-                  )
-                }
-              >
-                Player 2
-              </Tab>
+              <TabHeader>Player 1</TabHeader>
+              <TabHeader>Player 2</TabHeader>
             </Tab.List>
             <Tab.Panels>
               <Tab.Panel>
-                <div onDragOver={handleDragOver} onDrop={handleDropElectron}>
-                  {plyrComponent}
-                  {/* Additional Controls */}
-                  <h3>Additional controls:</h3>
-                  <ButtonComponent
-                    label="-1 Sec"
-                    onClick={() => {
-                      if (playerRef?.current !== null) {
-                        jumpToSecond(playerRef.current.plyr.currentTime - 1)
-                      }
-                    }}
-                  />
-                  <ButtonComponent
-                    label="+1 Sec"
-                    onClick={() => {
-                      if (playerRef?.current !== null) {
-                        jumpToSecond(playerRef.current.plyr.currentTime + 1)
-                      }
-                    }}
-                  />
+                <Ply
+                  plyrComponent={plyrComponent}
+                  onDragOver={handleDragOver}
+                  onDrop={handleDropElectron}
+                  playerRef={playerRef}
+                  jumpToSecond={jumpToSecond}
+                >
                   <ButtonComponent label="Time Init" onClick={handleStartCut} />
                   <ButtonComponent label="Time End" onClick={handleEndCut} />
-                </div>
+                </Ply>
               </Tab.Panel>
               <Tab.Panel>
-                <div onDragOver={handleDragOver} onDrop={handleDrop}>
-                  {plyrComponent}
-                  {/* Additional Controls */}
-                  <h3>Additional controls:</h3>
-                  <ButtonComponent
-                    label="-1 Sec"
-                    onClick={() => {
-                      if (playerRef?.current !== null) {
-                        jumpToSecond(playerRef.current.plyr.currentTime - 1)
-                      }
-                    }}
-                  />
-                  <ButtonComponent
-                    label="+1 Sec"
-                    onClick={() => {
-                      if (playerRef?.current !== null) {
-                        jumpToSecond(playerRef.current.plyr.currentTime + 1)
-                      }
-                    }}
-                  />
+                <Ply
+                  plyrComponent={plyrComponent}
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop}
+                  playerRef={playerRef}
+                  jumpToSecond={jumpToSecond}
+                >
                   <ButtonComponent label="Time Init" onClick={handleStartCut} />
                   <ButtonComponent label="Time End" onClick={handleEndCut} />
-                </div>
-                <div onDragOver={handleDragOver} onDrop={handleSecondDrop}>
-                  {plyrSecondComponent}
-                  {/* Additional Controls */}
-                  <h3>Additional controls:</h3>
-                  <ButtonComponent
-                    label="-1 Sec"
-                    onClick={() => {
-                      if (playerSecondRef?.current !== null) {
-                        jumpSecondToSecond(
-                          playerSecondRef.current.plyr.currentTime - 1,
-                        )
-                      }
-                    }}
-                  />
-                  <ButtonComponent
-                    label="+1 Sec"
-                    onClick={() => {
-                      if (playerSecondRef?.current !== null) {
-                        jumpSecondToSecond(
-                          playerSecondRef.current.plyr.currentTime + 1,
-                        )
-                      }
-                    }}
-                  />
-                </div>
+                </Ply>
+                <Ply
+                  plyrComponent={plyrSecondComponent}
+                  onDragOver={handleDragOver}
+                  onDrop={handleSecondDrop}
+                  playerRef={playerSecondRef}
+                  jumpToSecond={jumpSecondToSecond}
+                />
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
@@ -316,7 +246,6 @@ export default function Player() {
             setCutStart={setCutStart}
             cutEnd={cutEnd}
             setCutEnd={setCutEnd}
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             handleConvert={handleConvert}
             volume={volume}
             setVolume={setVolume}

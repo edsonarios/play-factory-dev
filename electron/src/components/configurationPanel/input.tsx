@@ -24,7 +24,7 @@ export default function InputComponent({
     }
   }, [value, validate])
   return (
-    <div className="flex flex-col space-y-1 mb-4">
+    <div className="flex flex-col">
       <label className="text-sm font-semibold ">{label}</label>
       <input
         type="text"

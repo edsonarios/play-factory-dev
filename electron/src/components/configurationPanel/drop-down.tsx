@@ -20,8 +20,8 @@ export default function DropDownComponent({
   options,
 }: DropDownComponentProps) {
   return (
-    <div className="w-60 mb-4">
-      <h3>{label}</h3>
+    <div className="w-60">
+      <label className="text-sm font-semibold">{label}</label>
       <Listbox value={value} onChange={setValue}>
         <div className="relative mt-1">
           <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
