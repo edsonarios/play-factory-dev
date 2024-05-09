@@ -1,4 +1,4 @@
-export function formatTime (seconds: number) {
+export function formatTime(seconds: number) {
   const roundedSeconds = Math.round(seconds)
   const hours = Math.floor(roundedSeconds / 3600)
   const minutes = Math.floor((roundedSeconds % 3600) / 60)
@@ -36,7 +36,7 @@ interface RequestData {
   format: string
 }
 
-export function validateDatas (requestDatas: RequestData) {
+export function validateDatas(requestDatas: RequestData) {
   if (validateNotEmptyField(requestDatas.videoName) !== '') {
     return 'Not Found videoName'
   }
@@ -51,7 +51,10 @@ export function validateDatas (requestDatas: RequestData) {
   }
   const cutStartSeconds = timeToSeconds(requestDatas.cutStart)
   const cutEndSeconds = timeToSeconds(requestDatas.cutEnd)
-  if (requestDatas.cutStart === '00:00:00' && requestDatas.cutEnd === '00:00:00') {
+  if (
+    requestDatas.cutStart === '00:00:00' &&
+    requestDatas.cutEnd === '00:00:00'
+  ) {
     return ''
   }
   if (cutEndSeconds <= cutStartSeconds) {

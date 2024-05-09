@@ -13,7 +13,12 @@ interface DropDownComponentProps {
   options: Options[]
 }
 
-export default function DropDownComponent ({ label, value, setValue, options }: DropDownComponentProps) {
+export default function DropDownComponent({
+  label,
+  value,
+  setValue,
+  options,
+}: DropDownComponentProps) {
   return (
     <div className="w-60 mb-4">
       <h3>{label}</h3>
@@ -54,13 +59,11 @@ export default function DropDownComponent ({ label, value, setValue, options }: 
                       >
                         {person.name}
                       </span>
-                      {selected
-                        ? (
+                      {selected ? (
                         <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-green-700">
                           <CheckIcon className="h-5 w-5" aria-hidden="true" />
                         </span>
-                          )
-                        : null}
+                      ) : null}
                     </>
                   )}
                 </Listbox.Option>

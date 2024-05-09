@@ -3,7 +3,9 @@ import { contextBridge, ipcRenderer } from 'electron'
 // --------- Expose some API to the Renderer process ---------
 // contextBridge.exposeInMainWorld('ipcRenderer', withPrototype(ipcRenderer))
 contextBridge.exposeInMainWorld('electron', {
-  send: (channel: any, data: any) => { ipcRenderer.send(channel, data) }
+  send: (channel: any, data: any) => {
+    ipcRenderer.send(channel, data)
+  },
 })
 // `exposeInMainWorld` can't detect attributes and methods of `prototype`, manually patching it.
 // function withPrototype (obj: Record<string, any>) {
@@ -25,8 +27,10 @@ contextBridge.exposeInMainWorld('electron', {
 // }
 
 // --------- Preload scripts loading ---------
-async function domReady (condition: DocumentReadyState[] = ['complete', 'interactive']) {
-  return await new Promise(resolve => {
+async function domReady(
+  condition: DocumentReadyState[] = ['complete', 'interactive'],
+) {
+  return await new Promise((resolve) => {
     if (condition.includes(document.readyState)) {
       resolve(true)
     } else {
@@ -40,16 +44,16 @@ async function domReady (condition: DocumentReadyState[] = ['complete', 'interac
 }
 
 const safeDOM = {
-  append (parent: HTMLElement, child: HTMLElement) {
-    if (!Array.from(parent.children).find(e => e === child)) {
+  append(parent: HTMLElement, child: HTMLElement) {
+    if (Array.from(parent.children).find((e) => e === child) == null) {
       parent.appendChild(child)
     }
   },
-  remove (parent: HTMLElement, child: HTMLElement) {
-    if (Array.from(parent.children).find(e => e === child)) {
+  remove(parent: HTMLElement, child: HTMLElement) {
+    if (Array.from(parent.children).find((e) => e === child) != null) {
       parent.removeChild(child)
     }
-  }
+  },
 }
 
 /**
@@ -58,7 +62,7 @@ const safeDOM = {
  * https://projects.lukehaas.me/css-loaders
  * https://matejkustec.github.io/SpinThatShit
  */
-function useLoading () {
+function useLoading() {
   const className = 'loaders-css__square-spin'
   const styleContent = `
 @keyframes square-spin {
@@ -96,23 +100,24 @@ function useLoading () {
   oDiv.innerHTML = `<div class="${className}"><div></div></div>`
 
   return {
-    appendLoading () {
+    appendLoading() {
       safeDOM.append(document.head, oStyle)
       safeDOM.append(document.body, oDiv)
     },
-    removeLoading () {
+    removeLoading() {
       safeDOM.remove(document.head, oStyle)
       safeDOM.remove(document.body, oDiv)
-    }
+    },
   }
 }
 
 // ----------------------------------------------------------------------
 
+// eslint-disable-next-line @typescript-eslint/unbound-method, react-hooks/rules-of-hooks
 const { appendLoading, removeLoading } = useLoading()
-domReady().then(appendLoading)
+void domReady().then(appendLoading)
 
-window.onmessage = ev => {
+window.onmessage = (ev) => {
   ev.data.payload === 'removeLoading' && removeLoading()
 }
 

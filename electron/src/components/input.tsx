@@ -8,12 +8,12 @@ interface InputComponentProps {
   required?: boolean
 }
 
-export default function InputComponent ({
+export default function InputComponent({
   label,
   value,
   onChange,
   validate,
-  required
+  required,
 }: InputComponentProps) {
   const [error, setError] = useState('')
 

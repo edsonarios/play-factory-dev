@@ -21,7 +21,7 @@ interface Options {
   value: string
 }
 
-export default function Player () {
+export default function Player() {
   const playerRef = useRef<APITypes>(null)
   const playerSecondRef = useRef<APITypes>(null)
   const [videoName, setVideoName] = useState<string>('')
@@ -38,16 +38,16 @@ export default function Player () {
     autoplay: true,
     hideControls: false,
     keyboard: {
-      global: true
-    }
+      global: true,
+    },
   }
   const plyrSecondOptions: PlyrOptions = {
     loop: { active: true },
     autoplay: true,
     hideControls: false,
     keyboard: {
-      global: false
-    }
+      global: false,
+    },
   }
 
   const handleStartCut = () => {
@@ -87,14 +87,14 @@ export default function Player () {
           sources: [
             {
               src: videoSrc,
-              provider: 'html5'
-            }
-          ]
+              provider: 'html5',
+            },
+          ],
         }}
         options={plyrOptions}
       />
     ),
-    [playerRef, videoSrc]
+    [playerRef, videoSrc],
   )
 
   const plyrSecondComponent = useMemo(
@@ -106,14 +106,14 @@ export default function Player () {
           sources: [
             {
               src: videoSecondSrc,
-              provider: 'html5'
-            }
-          ]
+              provider: 'html5',
+            },
+          ],
         }}
         options={plyrSecondOptions}
       />
     ),
-    [playerSecondRef, videoSecondSrc]
+    [playerSecondRef, videoSecondSrc],
   )
 
   const handleDragOver = (event: any) => {
@@ -138,7 +138,10 @@ export default function Player () {
     event.preventDefault()
     // Use DataTransferItemList interface to access the file(s)
     if (event.dataTransfer.items !== undefined) {
-      if (event.dataTransfer.items.length > 0 && event.dataTransfer.items[0].kind === 'file') {
+      if (
+        event.dataTransfer.items.length > 0 &&
+        event.dataTransfer.items[0].kind === 'file'
+      ) {
         const file = event.dataTransfer.items[0].getAsFile()
         console.log('File Path:', file.path)
         console.log(file)
@@ -175,7 +178,7 @@ export default function Player () {
       cutStart,
       cutEnd,
       volume: volume.value,
-      format: format.value
+      format: format.value,
     }
     console.log(requestData)
     const validDatas = validateDatas(requestData)
@@ -186,7 +189,7 @@ export default function Player () {
     window.electron.send('convert-video', requestData)
   }
 
-  function classNames (...classes: any) {
+  function classNames(...classes: any) {
     return classes.filter(Boolean).join(' ')
   }
 
@@ -204,7 +207,7 @@ export default function Player () {
                     'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
                     selected
                       ? 'bg-white shadow'
-                      : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'
+                      : 'text-blue-100 hover:bg-white/[0.12] hover:text-white',
                   )
                 }
               >
@@ -217,7 +220,7 @@ export default function Player () {
                     'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
                     selected
                       ? 'bg-white shadow'
-                      : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'
+                      : 'text-blue-100 hover:bg-white/[0.12] hover:text-white',
                   )
                 }
               >
@@ -282,7 +285,9 @@ export default function Player () {
                     label="-1 Sec"
                     onClick={() => {
                       if (playerSecondRef?.current !== null) {
-                        jumpSecondToSecond(playerSecondRef.current.plyr.currentTime - 1)
+                        jumpSecondToSecond(
+                          playerSecondRef.current.plyr.currentTime - 1,
+                        )
                       }
                     }}
                   />
@@ -290,7 +295,9 @@ export default function Player () {
                     label="+1 Sec"
                     onClick={() => {
                       if (playerSecondRef?.current !== null) {
-                        jumpSecondToSecond(playerSecondRef.current.plyr.currentTime + 1)
+                        jumpSecondToSecond(
+                          playerSecondRef.current.plyr.currentTime + 1,
+                        )
                       }
                     }}
                   />

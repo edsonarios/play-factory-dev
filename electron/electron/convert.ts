@@ -10,8 +10,9 @@ interface FileToConvertType {
   format: string
 }
 
-export function convert (fileToConvert: FileToConvertType) {
-  const { videoName, filePath, cutStart, cutEnd, volume, format } = fileToConvert
+export function convert(fileToConvert: FileToConvertType) {
+  const { videoName, filePath, cutStart, cutEnd, volume, format } =
+    fileToConvert
   let commandToExecute = `ffmpeg -ss ${cutStart} `
 
   if (cutEnd !== '00:00:00') {

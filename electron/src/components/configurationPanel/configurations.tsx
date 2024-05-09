@@ -26,7 +26,7 @@ const volumeOptions: Options[] = [
   { name: '2 Volume', value: '2' },
   { name: '3 Volume', value: '3' },
   { name: '4 Volume', value: '4' },
-  { name: '5 Volume', value: '5' }
+  { name: '5 Volume', value: '5' },
 ]
 
 const formatOptions: Options[] = [
@@ -36,10 +36,10 @@ const formatOptions: Options[] = [
   { name: 'MKV', value: 'mkv' },
   { name: 'Ts', value: 'ts' },
   { name: 'Mp3', value: 'mp3' },
-  { name: 'Wav', value: 'wav' }
+  { name: 'Wav', value: 'wav' },
 ]
 
-export default function ConfigurationComponent ({
+export default function ConfigurationComponent({
   filePath,
   setFilePath,
   cutStart,
@@ -50,7 +50,7 @@ export default function ConfigurationComponent ({
   setVolume,
   format,
   setFormat,
-  handleConvert
+  handleConvert,
 }: ConfigurationComponentProps) {
   return (
     <div className="mt-4">

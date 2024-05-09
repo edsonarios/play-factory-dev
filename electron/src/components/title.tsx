@@ -1,4 +1,4 @@
-export function Title () {
+export function Title() {
   return (
     <div className="flex mt-8">
       <img src="conversor.png" alt="" className="h-16" />

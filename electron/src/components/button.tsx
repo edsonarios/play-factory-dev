@@ -4,7 +4,11 @@ interface ButtonComponentProps {
   type?: 'submit' | 'button' | 'reset' | undefined
 }
 
-export default function ButtonComponent ({ label, onClick, type }: ButtonComponentProps) {
+export default function ButtonComponent({
+  label,
+  onClick,
+  type,
+}: ButtonComponentProps) {
   return (
     <button
       onClick={onClick}

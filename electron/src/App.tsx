@@ -1,7 +1,7 @@
 import './App.css'
 import Player from './components/Player'
 
-function App () {
+function App() {
   return <Player />
 }
 
