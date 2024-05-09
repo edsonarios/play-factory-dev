@@ -53,8 +53,8 @@ export default function ConfigurationComponent ({
   handleConvert
 }: ConfigurationComponentProps) {
   return (
-    <div>
-      <form onSubmit={handleConvert}>
+    <div className="mt-4">
+      <form className="flex flex-row gap-2" onSubmit={handleConvert}>
         <InputComponent
           label="File Path"
           value={filePath}
@@ -94,7 +94,7 @@ export default function ConfigurationComponent ({
           setValue={setFormat}
           options={formatOptions}
         />
-        <ButtonComponent label="Convert" type='submit' />
+        <ButtonComponent label="Convert" type="submit" />
       </form>
     </div>
   )

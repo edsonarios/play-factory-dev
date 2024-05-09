@@ -4,6 +4,7 @@ import ConfigurationComponent from './configurationPanel/configurations'
 import ButtonComponent from './button'
 import { Tab } from '@headlessui/react'
 import { formatTime, validateDatas } from '@/common/utils'
+import { Title } from './title'
 
 interface ElectronAPI {
   send: (channel: string, data: any) => void
@@ -191,8 +192,9 @@ export default function Player () {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <div className="flex flex-wrap justify-center gap-4 mb-4">
-        <div className="w-4/6 max-w-4xl">
+      <Title />
+      <div className="flex flex-col ">
+        <div className="">
           <Tab.Group>
             <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
               <Tab
@@ -299,7 +301,7 @@ export default function Player () {
         </div>
 
         {/* Configurations */}
-        <div className="w-1/6">
+        <div className="">
           <ConfigurationComponent
             filePath={filePath}
             setFilePath={setFilePath}
