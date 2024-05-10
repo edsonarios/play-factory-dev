@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from 'react'
+import { useState, useRef, useMemo, useEffect } from 'react'
 import Plyr, { type APITypes, type PlyrOptions } from 'plyr-react'
 import ConfigurationComponent from './configurationPanel/configurationsIndex'
 import ButtonComponent from './configurationPanel/button'
@@ -191,13 +191,112 @@ export default function Index() {
     window.electron.send('convert-video', requestData)
   }
 
+  // resize player
+  const appContainerRef = useRef<HTMLDivElement>(null)
+  // const playerContainerRef = useRef<HTMLDivElement>(null)
+  const updatePlayerSize = () => {
+    if (appContainerRef.current !== null) {
+      const titlePlace = document.getElementById('titleId')
+      const configPlace = document.getElementById('configurationId')
+      const playersPlace = document.getElementById('playersId')
+      const playerWrapper = document.querySelector(
+        '.plyr__video-wrapper',
+      ) as HTMLElement
+
+      if (
+        playerWrapper !== null &&
+        titlePlace !== null &&
+        configPlace !== null &&
+        playersPlace !== null
+      ) {
+        // Resize player in normal mode
+        // const containerWidth = playerContainerRef.current.offsetWidth
+        // const containerHeight = playerContainerRef.current.offsetHeight
+
+        const appWidth = appContainerRef.current.offsetWidth
+        const appHeight =
+          appContainerRef.current.offsetHeight -
+          (titlePlace.offsetHeight + configPlace.offsetHeight)
+
+        // console.log(
+        //   'app: ',
+        //   appWidth,
+        //   appHeight,
+        //   ' container: ',
+        //   containerWidth,
+        //   containerHeight,
+        // )
+        console.log(
+          appHeight,
+          appContainerRef.current.offsetHeight,
+          titlePlace.offsetHeight,
+          configPlace.offsetHeight,
+        )
+
+        const aspectRatio = 16 / 9
+
+        let playerHeight = appHeight
+        let playerWidth = appHeight * aspectRatio
+
+        if (playerWidth > appWidth) {
+          playerWidth = appWidth
+          playerHeight = appWidth / aspectRatio
+        }
+
+        if (playerHeight > appHeight) {
+          playerHeight = appHeight
+          playerWidth = playerHeight * aspectRatio
+        }
+        console.log(playerHeight)
+        playersPlace.style.maxWidth = `${playerWidth}px`
+        playersPlace.style.minWidth = `${playerWidth}px`
+        playersPlace.style.maxHeight = `${playerHeight}px`
+        playersPlace.style.minHeight = `${playerHeight}px`
+      }
+    }
+  }
+
+  useEffect(() => {
+    updatePlayerSize()
+    window.addEventListener('resize', updatePlayerSize)
+    return () => {
+      window.removeEventListener('resize', updatePlayerSize)
+    }
+  }, [videoSrc])
+
+  // Event full screen
+  useEffect(() => {
+    const handleFullScreen = (event: any) => {
+      if (event.target !== undefined) {
+        const playerWrapper = document.querySelector(
+          '.plyr__video-wrapper',
+        ) as HTMLElement
+        if (playerWrapper !== null) {
+          playerWrapper.style.maxWidth = 'none'
+          playerWrapper.style.minWidth = 'none'
+          playerWrapper.style.maxHeight = 'none'
+          playerWrapper.style.minHeight = 'none'
+        }
+      }
+    }
+    window.addEventListener('enterfullscreen', handleFullScreen)
+
+    return () => {
+      window.removeEventListener('enterfullscreen', handleFullScreen)
+    }
+  }, [])
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
+    <div
+      ref={appContainerRef}
+      className="flex flex-col items-center justify-center h-screen"
+    >
       <Title />
-      <div className="flex flex-col ">
-        <div className="">
+      <div className="flex flex-col justify-center items-center">
+        {/* <div className="h-[800px] w-[1800px]"> */}
+        <div id="playersId" className="px-4">
           <Tab.Group>
-            <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
+            <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1 w-full">
               <TabHeader>Player 1</TabHeader>
               <TabHeader>Player 2</TabHeader>
             </Tab.List>
@@ -214,7 +313,7 @@ export default function Index() {
                   <ButtonComponent label="Time End" onClick={handleEndCut} />
                 </Ply>
               </Tab.Panel>
-              <Tab.Panel>
+              <Tab.Panel className="flex w-full">
                 <Ply
                   plyrComponent={plyrComponent}
                   onDragOver={handleDragOver}
@@ -238,7 +337,7 @@ export default function Index() {
         </div>
 
         {/* Configurations */}
-        <div className="">
+        <div id="configurationId" className="">
           <ConfigurationComponent
             filePath={filePath}
             setFilePath={setFilePath}

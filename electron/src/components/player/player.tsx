@@ -17,7 +17,7 @@ export function Ply({
   children?: React.ReactNode
 }) {
   return (
-    <div onDragOver={onDragOver} onDrop={onDrop}>
+    <div onDragOver={onDragOver} onDrop={onDrop} className="w-full">
       {plyrComponent}
       {/* Additional Controls */}
       <h3>Additional controls:</h3>
