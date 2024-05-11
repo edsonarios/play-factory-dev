@@ -1,5 +1,5 @@
 import { validateNotEmptyField, validateTimeFormat } from '@/common/utils'
-import DropDownComponent from './drop-down'
+import DropDownComponent from './dropDown'
 import InputComponent from './input'
 import ButtonComponent from '@/components/configurationPanel/button'
 interface Options {
@@ -21,22 +21,22 @@ interface ConfigurationComponentProps {
 }
 
 const volumeOptions: Options[] = [
-  { name: 'None', value: '' },
-  { name: '0.5 Volume', value: '0.5' },
-  { name: '2 Volume', value: '2' },
-  { name: '3 Volume', value: '3' },
-  { name: '4 Volume', value: '4' },
   { name: '5 Volume', value: '5' },
+  { name: '4 Volume', value: '4' },
+  { name: '3 Volume', value: '3' },
+  { name: '2 Volume', value: '2' },
+  { name: '0.5 Volume', value: '0.5' },
+  { name: 'None', value: '' },
 ]
 
 const formatOptions: Options[] = [
-  { name: 'None', value: '' },
-  { name: 'Mp4', value: 'mp4' },
-  { name: 'Flv', value: 'flv' },
-  { name: 'MKV', value: 'mkv' },
-  { name: 'Ts', value: 'ts' },
   { name: 'Mp3', value: 'mp3' },
   { name: 'Wav', value: 'wav' },
+  { name: 'Ts', value: 'ts' },
+  { name: 'MKV', value: 'mkv' },
+  { name: 'Flv', value: 'flv' },
+  { name: 'Mp4', value: 'mp4' },
+  { name: 'None', value: '' },
 ]
 
 export default function ConfigurationComponent({
@@ -53,51 +53,61 @@ export default function ConfigurationComponent({
   handleConvert,
 }: ConfigurationComponentProps) {
   return (
-    <div className="mt-4">
+    <div className="pt-4">
       <form
         className="flex flex-row gap-x-2 justify-center items-start"
         onSubmit={handleConvert}
       >
-        <InputComponent
-          label="File Path"
-          value={filePath}
-          onChange={(event: any) => {
-            setFilePath(event.target.value)
-          }}
-          validate={validateNotEmptyField}
-          required={true}
-        />
-        <InputComponent
-          label="Time InitCut - HH:MM:SS"
-          value={cutStart}
-          onChange={(event: any) => {
-            setCutStart(event.target.value)
-          }}
-          validate={validateTimeFormat}
-          required={true}
-        />
-        <InputComponent
-          label="Time FinishCut - HH:MM:SS"
-          value={cutEnd}
-          onChange={(event: any) => {
-            setCutEnd(event.target.value)
-          }}
-          validate={validateTimeFormat}
-          required={true}
-        />
-        <DropDownComponent
-          label="Change Volume"
-          value={volume}
-          setValue={setVolume}
-          options={volumeOptions}
-        />
-        <DropDownComponent
-          label="Convert To"
-          value={format}
-          setValue={setFormat}
-          options={formatOptions}
-        />
-        <ButtonComponent label="Convert" type="submit" />
+        <div className="flex flex-row gap-x-2">
+          <div className="flex flex-row gap-x-4 flex-wrap">
+            <InputComponent
+              label="File Path"
+              value={filePath}
+              onChange={(event: any) => {
+                setFilePath(event.target.value)
+              }}
+              validate={validateNotEmptyField}
+              required={true}
+            />
+            <InputComponent
+              label="Cut Init - HH:MM:SS"
+              value={cutStart}
+              onChange={(event: any) => {
+                setCutStart(event.target.value)
+              }}
+              validate={validateTimeFormat}
+              required={true}
+            />
+            <InputComponent
+              label="Cut Finish - HH:MM:SS"
+              value={cutEnd}
+              onChange={(event: any) => {
+                setCutEnd(event.target.value)
+              }}
+              validate={validateTimeFormat}
+              required={true}
+            />
+            <DropDownComponent
+              label="Volume"
+              value={volume}
+              setValue={setVolume}
+              options={volumeOptions}
+            />
+            <DropDownComponent
+              label="Format"
+              value={format}
+              setValue={setFormat}
+              options={formatOptions}
+            />
+          </div>
+          <div className="flex items-start pl-4">
+            <ButtonComponent
+              label="Convert"
+              type="submit"
+              style="py-4 text-lg"
+            />
+          </div>
+        </div>
       </form>
     </div>
   )

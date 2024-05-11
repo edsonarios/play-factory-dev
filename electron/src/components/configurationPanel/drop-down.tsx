@@ -13,7 +13,7 @@ interface DropDownComponentProps {
   options: Options[]
 }
 
-export default function DropDownComponent({
+export default function DropDownComponent2({
   label,
   value,
   setValue,

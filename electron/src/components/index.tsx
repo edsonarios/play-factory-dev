@@ -31,7 +31,7 @@ export default function Index() {
   const [cutEnd, setCutEnd] = useState<string>('00:00:00')
   const [volume, setVolume] = useState<Options>({ name: 'None', value: '' })
   const [format, setFormat] = useState<Options>({ name: 'None', value: '' })
-  const [filePath, setFilePath] = useState<string>('')
+  const [filePath, setFilePath] = useState<string>(' ')
 
   const plyrOptions: PlyrOptions = {
     loop: { active: true },
@@ -193,6 +193,7 @@ export default function Index() {
   const appContainerRef = useRef<HTMLDivElement>(null)
   // const playerContainerRef = useRef<HTMLDivElement>(null)
   const updatePlayerSize = () => {
+    console.log('updatePlayerSize')
     if (appContainerRef.current !== null) {
       const playersPlace = document.getElementById('singlePlayer')
       const titlePlace = document.getElementById('titleId')
@@ -225,6 +226,8 @@ export default function Index() {
         console.log(
           'appContainerRef: ',
           appContainerRef.current.offsetHeight,
+          'appWidth: ',
+          appWidth,
           'appHeight: ',
           appHeight,
           'titlePlace: ',
@@ -238,16 +241,16 @@ export default function Index() {
         const aspectRatio = 16 / 8
 
         let playerHeight = appHeight
-        let playerWidth = appHeight * aspectRatio
+        let playerWidth = +(appHeight * aspectRatio).toFixed(0)
 
         if (playerWidth > appWidth) {
           playerWidth = appWidth
-          playerHeight = appWidth / aspectRatio
+          playerHeight = +(appWidth / aspectRatio).toFixed(0)
         }
 
         if (playerHeight > appHeight) {
           playerHeight = appHeight
-          playerWidth = playerHeight * aspectRatio
+          playerWidth = +(playerHeight * aspectRatio).toFixed(0)
         }
         playerWrapper.style.maxWidth = `${playerWidth}px`
         playerWrapper.style.minWidth = `${playerWidth}px`
@@ -292,10 +295,10 @@ export default function Index() {
   return (
     <div
       ref={appContainerRef}
-      className="flex flex-col items-center justify-start h-screen px-4"
+      className="flex flex-col items-center justify-start h-screen "
     >
       <Title />
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col justify-center items-center gap-x-4">
         <div id="tabsId" className="flex flex-row w-full">
           <button
             className={`headerButton ${selectTab === 0 ? 'bg-white' : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'}`}
@@ -350,7 +353,7 @@ export default function Index() {
         )}
 
         {/* Configurations */}
-        <div id="configurationId" className="pb-4">
+        <div id="configurationId" className="pb-4 w-full">
           <ConfigurationComponent
             filePath={filePath}
             setFilePath={setFilePath}
