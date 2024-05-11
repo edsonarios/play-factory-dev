@@ -2,10 +2,8 @@ import { useState, useRef, useMemo, useEffect } from 'react'
 import Plyr, { type APITypes, type PlyrOptions } from 'plyr-react'
 import ConfigurationComponent from './configurationPanel/configurationsIndex'
 import ButtonComponent from './configurationPanel/button'
-import { Tab } from '@headlessui/react'
 import { formatTime, validateDatas } from '@/common/utils'
 import { Title } from './title'
-import { TabHeader } from './player/tabHeader'
 import { Ply } from './player/player'
 
 interface ElectronAPI {
@@ -196,9 +194,12 @@ export default function Index() {
   // const playerContainerRef = useRef<HTMLDivElement>(null)
   const updatePlayerSize = () => {
     if (appContainerRef.current !== null) {
+      const playersPlace = document.getElementById('singlePlayer')
       const titlePlace = document.getElementById('titleId')
       const configPlace = document.getElementById('configurationId')
-      const playersPlace = document.getElementById('playersId')
+      const additionalTPlace = document.getElementById('additionalTId')
+      const additionalCPlace = document.getElementById('additionalCId')
+      const tabsPlace = document.getElementById('tabsId')
       const playerWrapper = document.querySelector(
         '.plyr__video-wrapper',
       ) as HTMLElement
@@ -207,33 +208,34 @@ export default function Index() {
         playerWrapper !== null &&
         titlePlace !== null &&
         configPlace !== null &&
-        playersPlace !== null
+        playersPlace !== null &&
+        additionalCPlace !== null &&
+        tabsPlace !== null &&
+        additionalTPlace !== null
       ) {
-        // Resize player in normal mode
-        // const containerWidth = playerContainerRef.current.offsetWidth
-        // const containerHeight = playerContainerRef.current.offsetHeight
-
         const appWidth = appContainerRef.current.offsetWidth
         const appHeight =
           appContainerRef.current.offsetHeight -
-          (titlePlace.offsetHeight + configPlace.offsetHeight)
+          (titlePlace.offsetHeight +
+            configPlace.offsetHeight +
+            additionalCPlace.offsetHeight +
+            tabsPlace.offsetHeight +
+            additionalTPlace.offsetHeight)
 
-        // console.log(
-        //   'app: ',
-        //   appWidth,
-        //   appHeight,
-        //   ' container: ',
-        //   containerWidth,
-        //   containerHeight,
-        // )
         console.log(
-          appHeight,
+          'appContainerRef: ',
           appContainerRef.current.offsetHeight,
+          'appHeight: ',
+          appHeight,
+          'titlePlace: ',
           titlePlace.offsetHeight,
+          'configPlace: ',
           configPlace.offsetHeight,
+          'additionalCPlace: ',
+          additionalCPlace.offsetHeight,
         )
 
-        const aspectRatio = 16 / 9
+        const aspectRatio = 16 / 8
 
         let playerHeight = appHeight
         let playerWidth = appHeight * aspectRatio
@@ -247,11 +249,10 @@ export default function Index() {
           playerHeight = appHeight
           playerWidth = playerHeight * aspectRatio
         }
-        console.log(playerHeight)
-        playersPlace.style.maxWidth = `${playerWidth}px`
-        playersPlace.style.minWidth = `${playerWidth}px`
-        playersPlace.style.maxHeight = `${playerHeight}px`
-        playersPlace.style.minHeight = `${playerHeight}px`
+        playerWrapper.style.maxWidth = `${playerWidth}px`
+        playerWrapper.style.minWidth = `${playerWidth}px`
+        playerWrapper.style.maxHeight = `${playerHeight}px`
+        playerWrapper.style.minHeight = `${playerHeight}px`
       }
     }
   }
@@ -286,58 +287,70 @@ export default function Index() {
     }
   }, [])
 
+  const [selectTab, setSelectTab] = useState(0)
+
   return (
     <div
       ref={appContainerRef}
-      className="flex flex-col items-center justify-center h-screen"
+      className="flex flex-col items-center justify-start h-screen px-4"
     >
       <Title />
       <div className="flex flex-col justify-center items-center">
-        {/* <div className="h-[800px] w-[1800px]"> */}
-        <div id="playersId" className="px-4">
-          <Tab.Group>
-            <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1 w-full">
-              <TabHeader>Player 1</TabHeader>
-              <TabHeader>Player 2</TabHeader>
-            </Tab.List>
-            <Tab.Panels>
-              <Tab.Panel>
-                <Ply
-                  plyrComponent={plyrComponent}
-                  onDragOver={handleDragOver}
-                  onDrop={handleDropElectron}
-                  playerRef={playerRef}
-                  jumpToSecond={jumpToSecond}
-                >
-                  <ButtonComponent label="Time Init" onClick={handleStartCut} />
-                  <ButtonComponent label="Time End" onClick={handleEndCut} />
-                </Ply>
-              </Tab.Panel>
-              <Tab.Panel className="flex w-full">
-                <Ply
-                  plyrComponent={plyrComponent}
-                  onDragOver={handleDragOver}
-                  onDrop={handleDrop}
-                  playerRef={playerRef}
-                  jumpToSecond={jumpToSecond}
-                >
-                  <ButtonComponent label="Time Init" onClick={handleStartCut} />
-                  <ButtonComponent label="Time End" onClick={handleEndCut} />
-                </Ply>
-                <Ply
-                  plyrComponent={plyrSecondComponent}
-                  onDragOver={handleDragOver}
-                  onDrop={handleSecondDrop}
-                  playerRef={playerSecondRef}
-                  jumpToSecond={jumpSecondToSecond}
-                />
-              </Tab.Panel>
-            </Tab.Panels>
-          </Tab.Group>
+        <div id="tabsId" className="flex flex-row w-full">
+          <button
+            className={`headerButton ${selectTab === 0 ? 'bg-white' : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'}`}
+            onClick={() => {
+              setSelectTab(0)
+            }}
+          >
+            Single Player
+          </button>
+          <button
+            className={`headerButton ${selectTab === 1 ? 'bg-white shadow' : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'}`}
+            onClick={() => {
+              setSelectTab(1)
+            }}
+          >
+            Double Player
+          </button>
         </div>
+        {selectTab === 0 ? (
+          <div className="">
+            <Ply
+              plyrComponent={plyrComponent}
+              onDragOver={handleDragOver}
+              onDrop={handleDropElectron}
+              playerRef={playerRef}
+              jumpToSecond={jumpToSecond}
+            >
+              <ButtonComponent label="Time Init" onClick={handleStartCut} />
+              <ButtonComponent label="Time End" onClick={handleEndCut} />
+            </Ply>
+          </div>
+        ) : (
+          <div id="doublePlayer" className="flex flex-row">
+            <Ply
+              plyrComponent={plyrComponent}
+              onDragOver={handleDragOver}
+              onDrop={handleDropElectron}
+              playerRef={playerRef}
+              jumpToSecond={jumpToSecond}
+            >
+              <ButtonComponent label="Time Init" onClick={handleStartCut} />
+              <ButtonComponent label="Time End" onClick={handleEndCut} />
+            </Ply>
+            <Ply
+              plyrComponent={plyrSecondComponent}
+              onDragOver={handleDragOver}
+              onDrop={handleSecondDrop}
+              playerRef={playerSecondRef}
+              jumpToSecond={jumpSecondToSecond}
+            />
+          </div>
+        )}
 
         {/* Configurations */}
-        <div id="configurationId" className="">
+        <div id="configurationId" className="pb-4">
           <ConfigurationComponent
             filePath={filePath}
             setFilePath={setFilePath}

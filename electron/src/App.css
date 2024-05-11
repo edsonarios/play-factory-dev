@@ -1,0 +1,3 @@
+.headerButton{
+  @apply text-lg w-full rounded-md py-2 font-medium text-gray-700;
+}
