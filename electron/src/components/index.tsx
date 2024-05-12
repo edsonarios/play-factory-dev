@@ -5,6 +5,7 @@ import ButtonComponent from './configurationPanel/button'
 import { formatTime, validateDatas } from '@/common/utils'
 import { Title } from './title'
 import { Ply } from './player/player'
+import { TabHeader } from './player/tabHeader'
 
 interface ElectronAPI {
   send: (channel: string, data: any) => void
@@ -29,8 +30,14 @@ export default function IndexComponent() {
   const [videoSecondSrc, setVideoSecondSrc] = useState<string>('')
   const [cutStart, setCutStart] = useState<string>('00:00:00')
   const [cutEnd, setCutEnd] = useState<string>('00:00:00')
-  const [volume, setVolume] = useState<Options>({ name: 'None', value: '' })
-  const [format, setFormat] = useState<Options>({ name: 'None', value: '' })
+  const [volume, setVolume] = useState<Options>({
+    name: 'Not Change',
+    value: '',
+  })
+  const [format, setFormat] = useState<Options>({
+    name: 'Not Change',
+    value: '',
+  })
   const [filePath, setFilePath] = useState<string>(' ')
 
   const plyrOptions: PlyrOptions = {
@@ -119,20 +126,6 @@ export default function IndexComponent() {
   const handleDragOver = (event: any) => {
     event.preventDefault()
   }
-
-  // const handleDrop = (event: any) => {
-  //   event.preventDefault()
-  //   const files = event.dataTransfer.files
-
-  //   if (Boolean(files) && files.length > 0) {
-  //     const file = files[0]
-  //     const url = URL.createObjectURL(file)
-  //     setCutEnd('00:00:00')
-  //     setCutStart('00:00:00')
-  //     setVideoSrc(url)
-  //     setVideoName(file.name)
-  //   }
-  // }
 
   const handleDropElectron = (event: any) => {
     event.preventDefault()
@@ -299,23 +292,19 @@ export default function IndexComponent() {
     >
       <Title />
       <div className="flex flex-col justify-center items-center">
-        <div id="tabsId" className="flex flex-row w-full">
-          <button
-            className={`headerButton ${selectTab === 0 ? 'bg-white' : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'}`}
-            onClick={() => {
-              setSelectTab(0)
-            }}
-          >
-            Single Player
-          </button>
-          <button
-            className={`headerButton ${selectTab === 1 ? 'bg-white shadow' : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'}`}
-            onClick={() => {
-              setSelectTab(1)
-            }}
-          >
-            Double Player
-          </button>
+        <div id="tabsId" className="flex flex-row min-w-[500px]">
+          <TabHeader
+            label="Single Player"
+            selectTab={0}
+            currentTab={selectTab}
+            setSelectTab={setSelectTab}
+          />
+          <TabHeader
+            label="Double Player"
+            selectTab={1}
+            currentTab={selectTab}
+            setSelectTab={setSelectTab}
+          />
         </div>
         {selectTab === 0 ? (
           <div className="">

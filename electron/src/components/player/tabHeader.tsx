@@ -1,21 +1,23 @@
-import { Tab } from '@headlessui/react'
-
-export function TabHeader({ children }: { children: React.ReactNode }) {
-  function classNames(...classes: any) {
-    return classes.filter(Boolean).join(' ')
-  }
+export function TabHeader({
+  label,
+  selectTab,
+  currentTab,
+  setSelectTab,
+}: {
+  label: string
+  selectTab: number
+  currentTab: number
+  setSelectTab: React.Dispatch<React.SetStateAction<number>>
+}) {
   return (
-    <Tab
-      className={({ selected }) =>
-        classNames(
-          'text-lg w-full rounded-md py-2 font-medium text-gray-700',
-          selected
-            ? 'bg-white shadow'
-            : 'text-blue-100 hover:bg-white/[0.12] hover:text-white',
-        )
-      }
+    <button
+      className={`headerButton
+      ${selectTab === currentTab ? 'bg-white' : 'text-blue-100 hover:bg-white/[0.12] hover:text-white border-2 border-zinc-700'}`}
+      onClick={() => {
+        setSelectTab(selectTab)
+      }}
     >
-      {children}
-    </Tab>
+      {label}
+    </button>
   )
 }

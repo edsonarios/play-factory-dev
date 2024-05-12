@@ -26,7 +26,7 @@ const volumeOptions: Options[] = [
   { name: '3 Volume', value: '3' },
   { name: '2 Volume', value: '2' },
   { name: '0.5 Volume', value: '0.5' },
-  { name: 'None', value: '' },
+  { name: 'Not Change', value: '' },
 ]
 
 const formatOptions: Options[] = [
@@ -36,7 +36,7 @@ const formatOptions: Options[] = [
   { name: 'MKV', value: 'mkv' },
   { name: 'Flv', value: 'flv' },
   { name: 'Mp4', value: 'mp4' },
-  { name: 'None', value: '' },
+  { name: 'Not Change', value: '' },
 ]
 
 export default function ConfigurationComponent({
@@ -54,7 +54,7 @@ export default function ConfigurationComponent({
 }: ConfigurationComponentProps) {
   return (
     <div className="pt-4">
-      <h3 id="additionalTId" className="text-lg">
+      <h3 id="additionalTId" className="text-lg border-t-2 border-zinc-700">
         Configurations:
       </h3>
       <form className="flex flex-row gap-x-2 mt-2" onSubmit={handleConvert}>
@@ -70,22 +70,24 @@ export default function ConfigurationComponent({
               required={true}
             />
             <InputComponent
-              label="Cut Init - HH:MM:SS"
+              label="Cut Init"
               value={cutStart}
               onChange={(event: any) => {
                 setCutStart(event.target.value)
               }}
               validate={validateTimeFormat}
               required={true}
+              placeholder="HH:MM:SS"
             />
             <InputComponent
-              label="Cut Finish - HH:MM:SS"
+              label="Cut Finish"
               value={cutEnd}
               onChange={(event: any) => {
                 setCutEnd(event.target.value)
               }}
               validate={validateTimeFormat}
               required={true}
+              placeholder="HH:MM:SS"
             />
             <DropDownComponent
               label="Volume"

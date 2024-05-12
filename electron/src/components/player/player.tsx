@@ -22,7 +22,7 @@ export function Ply({
     <div
       onDragOver={onDragOver}
       onDrop={onDrop}
-      className="w-full flex flex-col"
+      className="w-full flex flex-col mb-2"
     >
       <div id={idPlayer}>{plyrComponent}</div>
       <div id="additionalCId" className="flex flex-row gap-x-2 mt-2 flex-wrap">
