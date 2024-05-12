@@ -2,6 +2,7 @@ import { type APITypes } from 'plyr-react'
 import ButtonComponent from '../configurationPanel/button'
 
 export function Ply({
+  idPlayer,
   plyrComponent,
   onDragOver,
   onDrop,
@@ -9,6 +10,7 @@ export function Ply({
   jumpToSecond,
   children,
 }: {
+  idPlayer: string
   plyrComponent: JSX.Element
   onDragOver: (e: React.DragEvent<HTMLDivElement>) => void
   onDrop: (e: React.DragEvent<HTMLDivElement>) => void
@@ -22,8 +24,8 @@ export function Ply({
       onDrop={onDrop}
       className="w-full flex flex-col"
     >
-      <div id="singlePlayer">{plyrComponent}</div>
-      <div id="additionalCId" className="flex flex-row gap-x-2 mt-2">
+      <div id={idPlayer}>{plyrComponent}</div>
+      <div id="additionalCId" className="flex flex-row gap-x-2 mt-2 flex-wrap">
         <ButtonComponent
           label="-1 Sec"
           onClick={() => {

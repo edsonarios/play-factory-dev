@@ -21,7 +21,7 @@ interface Options {
   value: string
 }
 
-export default function Index() {
+export default function IndexComponent() {
   const playerRef = useRef<APITypes>(null)
   const playerSecondRef = useRef<APITypes>(null)
   const [videoName, setVideoName] = useState<string>('')
@@ -189,56 +189,44 @@ export default function Index() {
     window.electron.send('convert-video', requestData)
   }
 
+  const [selectTab, setSelectTab] = useState(0)
   // resize player
   const appContainerRef = useRef<HTMLDivElement>(null)
-  // const playerContainerRef = useRef<HTMLDivElement>(null)
   const updatePlayerSize = () => {
     console.log('updatePlayerSize')
     if (appContainerRef.current !== null) {
-      const playersPlace = document.getElementById('singlePlayer')
       const titlePlace = document.getElementById('titleId')
       const configPlace = document.getElementById('configurationId')
       const additionalTPlace = document.getElementById('additionalTId')
       const additionalCPlace = document.getElementById('additionalCId')
       const tabsPlace = document.getElementById('tabsId')
-      const playerWrapper = document.querySelector(
+      const playerWrapper: NodeListOf<HTMLElement> = document.querySelectorAll(
         '.plyr__video-wrapper',
-      ) as HTMLElement
-
+      )
       if (
         playerWrapper !== null &&
         titlePlace !== null &&
         configPlace !== null &&
-        playersPlace !== null &&
         additionalCPlace !== null &&
         tabsPlace !== null &&
         additionalTPlace !== null
       ) {
         const appWidth = appContainerRef.current.offsetWidth
-        const appHeight =
-          appContainerRef.current.offsetHeight -
-          (titlePlace.offsetHeight +
-            configPlace.offsetHeight +
-            additionalCPlace.offsetHeight +
-            tabsPlace.offsetHeight +
-            additionalTPlace.offsetHeight)
-
-        console.log(
-          'appContainerRef: ',
-          appContainerRef.current.offsetHeight,
-          'appWidth: ',
-          appWidth,
-          'appHeight: ',
-          appHeight,
-          'titlePlace: ',
-          titlePlace.offsetHeight,
-          'configPlace: ',
-          configPlace.offsetHeight,
-          'additionalCPlace: ',
-          additionalCPlace.offsetHeight,
-        )
-
-        const aspectRatio = 16 / 8
+        let appHeight
+        let aspectRatio
+        if (selectTab === 0) {
+          aspectRatio = 16 / 9
+          appHeight =
+            appContainerRef.current.offsetHeight -
+            (titlePlace.offsetHeight +
+              configPlace.offsetHeight +
+              additionalCPlace.offsetHeight +
+              tabsPlace.offsetHeight +
+              additionalTPlace.offsetHeight)
+        } else {
+          aspectRatio = 16 / 8
+          appHeight = appContainerRef.current.offsetHeight
+        }
 
         let playerHeight = appHeight
         let playerWidth = +(appHeight * aspectRatio).toFixed(0)
@@ -252,10 +240,24 @@ export default function Index() {
           playerHeight = appHeight
           playerWidth = +(playerHeight * aspectRatio).toFixed(0)
         }
-        playerWrapper.style.maxWidth = `${playerWidth}px`
-        playerWrapper.style.minWidth = `${playerWidth}px`
-        playerWrapper.style.maxHeight = `${playerHeight}px`
-        playerWrapper.style.minHeight = `${playerHeight}px`
+        if (selectTab === 0) {
+          playerWrapper.forEach((element) => {
+            element.style.maxWidth = `${playerWidth}px`
+            element.style.minWidth = `${playerWidth}px`
+            element.style.maxHeight = `${playerHeight}px`
+            element.style.minHeight = `${playerHeight}px`
+          })
+        }
+        if (selectTab === 1) {
+          const doublePlayerWidth = playerWidth / 2
+          const doublePlayerHeight = playerHeight / 2
+          playerWrapper.forEach((element) => {
+            element.style.maxWidth = `${doublePlayerWidth}px`
+            element.style.minWidth = `${doublePlayerWidth}px`
+            element.style.maxHeight = `${doublePlayerHeight}px`
+            element.style.minHeight = `${doublePlayerHeight}px`
+          })
+        }
       }
     }
   }
@@ -266,7 +268,7 @@ export default function Index() {
     return () => {
       window.removeEventListener('resize', updatePlayerSize)
     }
-  }, [videoSrc])
+  }, [selectTab, videoSrc, videoSecondSrc])
 
   // Event full screen
   useEffect(() => {
@@ -289,8 +291,6 @@ export default function Index() {
       window.removeEventListener('enterfullscreen', handleFullScreen)
     }
   }, [])
-
-  const [selectTab, setSelectTab] = useState(0)
 
   return (
     <div
@@ -320,6 +320,7 @@ export default function Index() {
         {selectTab === 0 ? (
           <div className="">
             <Ply
+              idPlayer="player1"
               plyrComponent={plyrComponent}
               onDragOver={handleDragOver}
               onDrop={handleDropElectron}
@@ -331,8 +332,12 @@ export default function Index() {
             </Ply>
           </div>
         ) : (
-          <div id="doublePlayer" className="flex flex-row">
+          <div
+            id="doublePlayer"
+            className="player-wrapper flex flex-row justify-between"
+          >
             <Ply
+              idPlayer="player1"
               plyrComponent={plyrComponent}
               onDragOver={handleDragOver}
               onDrop={handleDropElectron}
@@ -343,6 +348,7 @@ export default function Index() {
               <ButtonComponent label="Cut End" onClick={handleEndCut} />
             </Ply>
             <Ply
+              idPlayer="player2"
               plyrComponent={plyrSecondComponent}
               onDragOver={handleDragOver}
               onDrop={handleSecondDrop}

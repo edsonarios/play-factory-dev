@@ -1,8 +1,8 @@
 import './App.css'
-import Index from './components/Index'
+import IndexComponent from './components/index'
 
 function App() {
-  return <Index />
+  return <IndexComponent />
 }
 
 export default App
