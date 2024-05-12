@@ -23,8 +23,7 @@ export function Ply({
       className="w-full flex flex-col"
     >
       <div id="singlePlayer">{plyrComponent}</div>
-      <h3 id="additionalTId">Additional controls:</h3>
-      <div id="additionalCId" className="flex flex-row gap-x-2">
+      <div id="additionalCId" className="flex flex-row gap-x-2 mt-2">
         <ButtonComponent
           label="-1 Sec"
           onClick={() => {

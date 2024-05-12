@@ -120,19 +120,19 @@ export default function Index() {
     event.preventDefault()
   }
 
-  const handleDrop = (event: any) => {
-    event.preventDefault()
-    const files = event.dataTransfer.files
+  // const handleDrop = (event: any) => {
+  //   event.preventDefault()
+  //   const files = event.dataTransfer.files
 
-    if (Boolean(files) && files.length > 0) {
-      const file = files[0]
-      const url = URL.createObjectURL(file)
-      setCutEnd('00:00:00')
-      setCutStart('00:00:00')
-      setVideoSrc(url)
-      setVideoName(file.name)
-    }
-  }
+  //   if (Boolean(files) && files.length > 0) {
+  //     const file = files[0]
+  //     const url = URL.createObjectURL(file)
+  //     setCutEnd('00:00:00')
+  //     setCutStart('00:00:00')
+  //     setVideoSrc(url)
+  //     setVideoName(file.name)
+  //   }
+  // }
 
   const handleDropElectron = (event: any) => {
     event.preventDefault()
@@ -295,10 +295,10 @@ export default function Index() {
   return (
     <div
       ref={appContainerRef}
-      className="flex flex-col items-center justify-start h-screen "
+      className="flex flex-col items-center justify-start h-screen mx-4 "
     >
       <Title />
-      <div className="flex flex-col justify-center items-center gap-x-4">
+      <div className="flex flex-col justify-center items-center">
         <div id="tabsId" className="flex flex-row w-full">
           <button
             className={`headerButton ${selectTab === 0 ? 'bg-white' : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'}`}
@@ -326,8 +326,8 @@ export default function Index() {
               playerRef={playerRef}
               jumpToSecond={jumpToSecond}
             >
-              <ButtonComponent label="Time Init" onClick={handleStartCut} />
-              <ButtonComponent label="Time End" onClick={handleEndCut} />
+              <ButtonComponent label="Cut Init" onClick={handleStartCut} />
+              <ButtonComponent label="Cut End" onClick={handleEndCut} />
             </Ply>
           </div>
         ) : (
@@ -339,8 +339,8 @@ export default function Index() {
               playerRef={playerRef}
               jumpToSecond={jumpToSecond}
             >
-              <ButtonComponent label="Time Init" onClick={handleStartCut} />
-              <ButtonComponent label="Time End" onClick={handleEndCut} />
+              <ButtonComponent label="Cut Init" onClick={handleStartCut} />
+              <ButtonComponent label="Cut End" onClick={handleEndCut} />
             </Ply>
             <Ply
               plyrComponent={plyrSecondComponent}
@@ -353,7 +353,7 @@ export default function Index() {
         )}
 
         {/* Configurations */}
-        <div id="configurationId" className="pb-4 w-full">
+        <div id="configurationId" className="w-full">
           <ConfigurationComponent
             filePath={filePath}
             setFilePath={setFilePath}

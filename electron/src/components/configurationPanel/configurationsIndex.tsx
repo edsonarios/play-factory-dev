@@ -54,11 +54,11 @@ export default function ConfigurationComponent({
 }: ConfigurationComponentProps) {
   return (
     <div className="pt-4">
-      <form
-        className="flex flex-row gap-x-2 justify-center items-start"
-        onSubmit={handleConvert}
-      >
-        <div className="flex flex-row gap-x-2">
+      <h3 id="additionalTId" className="text-lg">
+        Configurations:
+      </h3>
+      <form className="flex flex-row gap-x-2 mt-2" onSubmit={handleConvert}>
+        <div className="flex flex-row gap-x-4">
           <div className="flex flex-row gap-x-4 flex-wrap">
             <InputComponent
               label="File Path"
