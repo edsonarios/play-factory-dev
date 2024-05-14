@@ -6,6 +6,8 @@ contextBridge.exposeInMainWorld('electron', {
   send: (channel: any, data: any) => {
     ipcRenderer.send(channel, data)
   },
+  receive: (channel: any, func: any) => ipcRenderer.on(channel, func),
+  removeListener: (channel: any) => ipcRenderer.removeAllListeners(channel),
 })
 // `exposeInMainWorld` can't detect attributes and methods of `prototype`, manually patching it.
 // function withPrototype (obj: Record<string, any>) {

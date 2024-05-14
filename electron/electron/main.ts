@@ -96,6 +96,5 @@ log.info('Ready')
 
 // Functions for app
 ipcMain.on('convert-video', (event, requestData) => {
-  log.info('to convert', event)
-  convert(requestData)
+  convert(event, requestData)
 })

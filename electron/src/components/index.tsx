@@ -6,9 +6,12 @@ import { formatTime, validateDatas } from '@/common/utils'
 import { Title } from './title'
 import { Ply } from './player/player'
 import { TabHeader } from './player/tabHeader'
+import ModalConvertionStatus from './modal/modalStatusConvert'
 
 interface ElectronAPI {
   send: (channel: string, data: any) => void
+  receive: (channel: string, func: (event: any, ...args: any[]) => void) => void
+  removeListener: (channel: string, func: (...args: any[]) => void) => void
 }
 
 declare global {
@@ -186,7 +189,6 @@ export default function IndexComponent() {
   // resize player
   const appContainerRef = useRef<HTMLDivElement>(null)
   const updatePlayerSize = () => {
-    console.log('updatePlayerSize')
     if (appContainerRef.current !== null) {
       const titlePlace = document.getElementById('titleId')
       const configPlace = document.getElementById('configurationId')
@@ -364,6 +366,7 @@ export default function IndexComponent() {
           />
         </div>
       </div>
+      <ModalConvertionStatus filePath={filePath} />
     </div>
   )
 }
