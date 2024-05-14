@@ -92,6 +92,16 @@ app.on('activate', () => {
 
 void app.whenReady().then(createWindow)
 
+void app.whenReady().then(() => {
+  win?.on('enter-full-screen', () => {
+    win?.setMenuBarVisibility(false)
+  })
+
+  win?.on('leave-full-screen', () => {
+    win?.setMenuBarVisibility(true)
+  })
+})
+
 log.info('Ready')
 
 // Functions for app
