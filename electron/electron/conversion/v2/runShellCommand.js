@@ -33,9 +33,7 @@ function runFFmpegCommand(commandToExecute) {
   })
 
   process.on('message', (message) => {
-    console.log('4. ', message)
     if (message === 'kill') {
-      console.log('5. ', 'killing ffmpeg')
       ffmpegProcess.kill('SIGTERM')
       isKilling = true
       countKilling++

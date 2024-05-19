@@ -15,8 +15,8 @@
   ],
   "extraResources": [
     {
-      "from": "electron/runFfmpeg.js",
-      "to": "runFfmpeg.js"
+      "from": "electron/conversion/v2/runShellCommand.js",
+      "to": "scripts/runShellCommand.js"
     }
   ],
   "mac": {

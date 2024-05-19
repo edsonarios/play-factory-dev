@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { ProgressBar } from './progressbar'
-// import ButtonComponent from '../configurationPanel/button'
+import ButtonComponent from '../configurationPanel/button'
 enum EstatusConvertion {
   Completed = 'Completed',
   ConversionCompleted = 'Conversion completed',
@@ -8,12 +8,14 @@ enum EstatusConvertion {
   Converting = 'Converting...',
   Close = 'Close',
   Cancel = 'Cancel',
+  Canceled = 'Canceled',
 }
 export default function ModalConvertionStatus({
   filePath,
 }: {
   filePath: string
 }) {
+  const timeToHiddenProgressBar = 1000
   const [statusConvertion, setStatusConvertion] = useState<string>('-1')
 
   const statusProgress = useCallback((_event: any, action: string) => {
@@ -21,7 +23,7 @@ export default function ModalConvertionStatus({
     if (action === EstatusConvertion.Completed) {
       setTimeout(() => {
         setStatusConvertion('-1')
-      }, 2000)
+      }, timeToHiddenProgressBar)
     }
   }, [])
 
@@ -31,6 +33,17 @@ export default function ModalConvertionStatus({
       window.electron.removeListener('conversion-status', statusProgress)
     }
   }, [])
+
+  const handledButtonProgressBar = () => {
+    window.electron.sendEvent('cancel-conversion')
+    setStatusConvertion('-1')
+    if (statusConvertion !== EstatusConvertion.Completed) {
+      setStatusConvertion('-2')
+      setTimeout(() => {
+        setStatusConvertion('-1')
+      }, timeToHiddenProgressBar)
+    }
+  }
 
   // Event key escape to close the modal
   useEffect(() => {
@@ -64,7 +77,9 @@ export default function ModalConvertionStatus({
                 ? EstatusConvertion.ConversionCompleted
                 : statusConvertion === EstatusConvertion.ConversionFailed
                   ? EstatusConvertion.ConversionFailed
-                  : EstatusConvertion.Converting}
+                  : statusConvertion === '-2'
+                    ? EstatusConvertion.Canceled
+                    : EstatusConvertion.Converting}
             </p>
             <p className="text-sm">{filePath}</p>
             <ProgressBar
@@ -76,7 +91,7 @@ export default function ModalConvertionStatus({
                     : parseInt(statusConvertion)
               }
             />
-            {/* <ButtonComponent
+            <ButtonComponent
               label={
                 statusConvertion === EstatusConvertion.Completed
                   ? EstatusConvertion.Close
@@ -85,11 +100,10 @@ export default function ModalConvertionStatus({
                     : EstatusConvertion.Cancel
               }
               onClick={() => {
-                window.electron.sendEvent('cancel-conversion')
-                setStatusConvertion('-1')
+                handledButtonProgressBar()
               }}
               style="py-1 w-16 self-end mr-2 mt-2"
-            /> */}
+            />
           </section>
         </div>
       )}

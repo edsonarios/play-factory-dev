@@ -4,7 +4,7 @@ export function ProgressBar({ value }: { value: number }) {
       <div
         className={`h-6 rounded-full text-center text-white
         ${
-          value === -1
+          value === -1 || value === -2
             ? 'bg-red-200'
             : value === 100
               ? 'bg-green-600'
@@ -12,7 +12,7 @@ export function ProgressBar({ value }: { value: number }) {
         } `}
         style={{ width: `${value === -1 ? 100 : value}%` }}
       >
-        {value === -1 ? '' : value + '%'}
+        {value === -1 || value === -2 ? '' : value + '%'}
       </div>
     </div>
   )
