@@ -7,6 +7,7 @@ import { type ISize } from './entities/size.entity'
 import { type ChildProcess, fork } from 'node:child_process'
 import { makeFfmpegCommand } from './conversion/v2/makeCommand'
 import { getTotalDuration, parseProgress } from './conversion/v2/utils'
+import { addFFmpegMenu } from './components/menuFFmpeg'
 
 // The built directory structure
 //
@@ -74,6 +75,7 @@ function createWindow() {
     win = null
     app.quit()
   })
+  addFFmpegMenu()
 }
 
 // Quit when all windows are closed, except on macOS. There, it's common

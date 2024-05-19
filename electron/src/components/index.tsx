@@ -284,17 +284,17 @@ export default function IndexComponent() {
   }, [])
 
   // Listen to loading status
-  // useEffect(() => {
-  //   const debugParams = async (_event: any, action: string) => {
-  //     console.log('debug :', action)
-  //   }
+  useEffect(() => {
+    const debugParams = async (_event: any, action: string) => {
+      console.log('debug: ', action)
+    }
 
-  //   window.electron.receive('electron-debug', debugParams)
+    window.electron.receive('ffmpeg-status', debugParams)
 
-  //   return () => {
-  //     window.electron.removeListener('electron-debug', debugParams)
-  //   }
-  // }, [])
+    return () => {
+      window.electron.removeListener('ffmpeg-status', debugParams)
+    }
+  }, [])
 
   return (
     <div
