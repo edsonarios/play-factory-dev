@@ -1,9 +1,10 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'node:path'
 import fs from 'node:fs'
-import { convert } from './convert'
 import log from 'electron-log'
 import { type ISize } from './entities/size.entity'
+// import { type ChildProcess } from 'node:child_process'
+import { convert } from './convert'
 // The built directory structure
 //
 // ├─┬─┬ dist
@@ -104,7 +105,23 @@ void app.whenReady().then(() => {
 
 log.info('Ready')
 
-// Functions for app
-ipcMain.on('convert-video', (event, requestData) => {
+// let ffmpegProcess: ChildProcess
+// let controller: AbortController
+ipcMain.on('start-conversion', (event, requestData) => {
+  event.sender.send('electron-debug', 'start-conversion')
+  // controller = new AbortController()
+  // ffmpegProcess = convert(event, requestData, controller.signal)
   convert(event, requestData)
 })
+
+// ipcMain.on('cancel-conversion', () => {
+//   console.log('Cancel1 conversion')
+//   // console.log(ffmpegProcess)
+//   if (ffmpegProcess !== undefined) {
+//     console.log('Cancel2 conversion')
+//     ffmpegProcess.kill('SIGINT')
+//     // ffmpegProcess.send('kill')
+//     // ffmpegProcess.kill('SIGTERM')
+//     controller.abort()
+//   }
+// })

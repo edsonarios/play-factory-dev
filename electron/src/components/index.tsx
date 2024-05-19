@@ -10,6 +10,7 @@ import ModalConvertionStatus from './modal/modalStatusConvert'
 
 interface ElectronAPI {
   send: (channel: string, data: any) => void
+  sendEvent: (channel: string) => void
   receive: (channel: string, func: (event: any, ...args: any[]) => void) => void
   removeListener: (channel: string, func: (...args: any[]) => void) => void
 }
@@ -139,10 +140,7 @@ export default function IndexComponent() {
         event.dataTransfer.items[0].kind === 'file'
       ) {
         const file = event.dataTransfer.items[0].getAsFile()
-        console.log('File Path:', file.path)
-        console.log(file)
         const url = URL.createObjectURL(file)
-        console.log(file.name)
         setCutEnd('00:00:00')
         setCutStart('00:00:00')
         setVolume({ name: 'None', value: '' })
@@ -167,7 +165,6 @@ export default function IndexComponent() {
 
   const handleConvert = (event: any) => {
     event.preventDefault()
-    console.log('from Front')
     const requestData = {
       videoName,
       filePath,
@@ -176,13 +173,12 @@ export default function IndexComponent() {
       volume: volume.value,
       format: format.value,
     }
-    console.log(requestData)
     const validDatas = validateDatas(requestData)
     if (validDatas !== '') {
       alert(`Error ${validDatas}`)
       return
     }
-    window.electron.send('convert-video', requestData)
+    window.electron.send('start-conversion', requestData)
   }
 
   const [selectTab, setSelectTab] = useState(0)
@@ -286,6 +282,19 @@ export default function IndexComponent() {
       window.removeEventListener('enterfullscreen', handleFullScreen)
     }
   }, [])
+
+  // Listen to loading status
+  // useEffect(() => {
+  //   const debugParams = async (_event: any, action: string) => {
+  //     console.log('debug :', action)
+  //   }
+
+  //   window.electron.receive('electron-debug', debugParams)
+
+  //   return () => {
+  //     window.electron.removeListener('electron-debug', debugParams)
+  //   }
+  // }, [])
 
   return (
     <div

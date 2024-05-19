@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { ProgressBar } from './progressbar'
-import ButtonComponent from '../configurationPanel/button'
+// import ButtonComponent from '../configurationPanel/button'
 enum EstatusConvertion {
   Completed = 'Completed',
   ConversionCompleted = 'Conversion completed',
@@ -18,6 +18,11 @@ export default function ModalConvertionStatus({
 
   const statusProgress = useCallback((_event: any, action: string) => {
     setStatusConvertion(action)
+    if (action === EstatusConvertion.Completed) {
+      setTimeout(() => {
+        setStatusConvertion('-1')
+      }, 2000)
+    }
   }, [])
 
   useEffect(() => {
@@ -71,7 +76,7 @@ export default function ModalConvertionStatus({
                     : parseInt(statusConvertion)
               }
             />
-            <ButtonComponent
+            {/* <ButtonComponent
               label={
                 statusConvertion === EstatusConvertion.Completed
                   ? EstatusConvertion.Close
@@ -80,10 +85,11 @@ export default function ModalConvertionStatus({
                     : EstatusConvertion.Cancel
               }
               onClick={() => {
+                window.electron.sendEvent('cancel-conversion')
                 setStatusConvertion('-1')
               }}
               style="py-1 w-16 self-end mr-2 mt-2"
-            />
+            /> */}
           </section>
         </div>
       )}

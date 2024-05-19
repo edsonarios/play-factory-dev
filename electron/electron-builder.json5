@@ -13,6 +13,12 @@
     "dist",
     "dist-electron"
   ],
+  "extraResources": [
+    {
+      "from": "electron/runFfmpeg.js",
+      "to": "runFfmpeg.js"
+    }
+  ],
   "mac": {
     "target": [
       "dmg"

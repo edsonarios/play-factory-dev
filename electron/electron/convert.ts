@@ -1,5 +1,5 @@
 import path from 'path'
-import { exec } from 'child_process'
+import { type ChildProcess, exec } from 'child_process'
 
 interface FileToConvertType {
   videoName: string
@@ -10,7 +10,6 @@ interface FileToConvertType {
   format: string
 }
 function getTotalDuration(stderr: string) {
-  console.log('getTotalDuration')
   const totalDuration = stderr.match(/Duration: (\d{2}:\d{2}:\d{2}.\d{2})/)
   if (totalDuration == null) return 0
   const timeString = totalDuration[1]
@@ -30,7 +29,11 @@ function parseProgress(stderr: string): number {
   return timeInSeconds
 }
 
-export function convert(event: any, fileToConvert: FileToConvertType) {
+export function convert(
+  event: any,
+  fileToConvert: FileToConvertType,
+  // signal: AbortSignal,
+) {
   const { videoName, filePath, cutStart, cutEnd, volume, format } =
     fileToConvert
   let commandToExecute = `ffmpeg -ss ${cutStart} `
@@ -87,4 +90,12 @@ export function convert(event: any, fileToConvert: FileToConvertType) {
       event.sender.send('conversion-status', 'Conversion failed')
     }
   })
+
+  return ffmpegProcess
+}
+
+export function cancelConversion(process: ChildProcess) {
+  if (process !== undefined && !process.killed) {
+    process.kill('SIGINT')
+  }
 }
