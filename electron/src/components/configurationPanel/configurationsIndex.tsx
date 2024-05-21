@@ -2,6 +2,8 @@ import { validateNotEmptyField, validateTimeFormat } from '@/common/utils'
 import DropDownComponent from './dropDown'
 import InputComponent from './input'
 import ButtonComponent from '@/components/configurationPanel/button'
+import { type FFmpegStoreType, useFFmpegStore } from '@/store/ffmpegStore'
+import { useEffect } from 'react'
 interface Options {
   name: string
   value: string
@@ -52,6 +54,23 @@ export default function ConfigurationComponent({
   setFormat,
   handleConvert,
 }: ConfigurationComponentProps) {
+  const { isFFmpegInstalled, setIsFFmpegVersion, setShowModalStatus } =
+    useFFmpegStore<FFmpegStoreType>((state) => state)
+
+  // Listen to the ffmpeg-status event
+  useEffect(() => {
+    const debugParams = async (_event: any, action: boolean) => {
+      setIsFFmpegVersion(action)
+      setShowModalStatus(true)
+    }
+
+    window.electron.receive('ffmpeg-status', debugParams)
+
+    return () => {
+      window.electron.removeListener('ffmpeg-status', debugParams)
+    }
+  }, [])
+
   return (
     <div className="pt-4">
       <h3 id="additionalTId" className="text-lg border-t-2 border-zinc-700">
@@ -103,11 +122,23 @@ export default function ConfigurationComponent({
             />
           </div>
           <div className="flex items-start pl-4">
-            <ButtonComponent
-              label="Convert"
-              type="submit"
-              style="py-4 text-lg"
-            />
+            {isFFmpegInstalled ? (
+              <ButtonComponent
+                label="Convert"
+                type="submit"
+                // style="py-4 text-lg"
+                style="py-4 text-lg"
+              />
+            ) : (
+              <ButtonComponent
+                label="Check FFmpeg"
+                type="button"
+                style="py-4 text-sm w-28 bg-yellow-500 hover:bg-yellow-700"
+                onClick={() => {
+                  window.electron.sendEvent('check-ffmpeg')
+                }}
+              />
+            )}
           </div>
         </div>
       </form>

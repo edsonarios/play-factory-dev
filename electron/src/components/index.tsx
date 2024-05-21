@@ -6,7 +6,8 @@ import { formatTime, validateDatas } from '@/common/utils'
 import { Title } from './title'
 import { Ply } from './player/player'
 import { TabHeader } from './player/tabHeader'
-import ModalConvertionStatus from './modal/modalStatusConvert'
+import StatusConversion from './modalStatusConversion/statusConversion'
+import StatusFFmpeg from './modalFFmpeg/statusFFmpeg'
 
 interface ElectronAPI {
   send: (channel: string, data: any) => void
@@ -283,18 +284,18 @@ export default function IndexComponent() {
     }
   }, [])
 
-  // Listen to loading status
-  useEffect(() => {
-    const debugParams = async (_event: any, action: string) => {
-      console.log('debug: ', action)
-    }
+  // // Listen to loading status
+  // useEffect(() => {
+  //   const debugParams = async (_event: any, action: string) => {
+  //     console.log('debug: ', action)
+  //   }
 
-    window.electron.receive('ffmpeg-status', debugParams)
+  //   window.electron.receive('ffmpeg-status', debugParams)
 
-    return () => {
-      window.electron.removeListener('ffmpeg-status', debugParams)
-    }
-  }, [])
+  //   return () => {
+  //     window.electron.removeListener('ffmpeg-status', debugParams)
+  //   }
+  // }, [])
 
   return (
     <div
@@ -375,7 +376,8 @@ export default function IndexComponent() {
           />
         </div>
       </div>
-      <ModalConvertionStatus filePath={filePath} />
+      <StatusConversion filePath={filePath} />
+      <StatusFFmpeg />
     </div>
   )
 }

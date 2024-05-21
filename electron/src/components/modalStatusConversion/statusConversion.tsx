@@ -10,11 +10,7 @@ enum EstatusConvertion {
   Cancel = 'Cancel',
   Canceled = 'Canceled',
 }
-export default function ModalConvertionStatus({
-  filePath,
-}: {
-  filePath: string
-}) {
+export default function StatusConversion({ filePath }: { filePath: string }) {
   const timeToHiddenProgressBar = 1000
   const [statusConvertion, setStatusConvertion] = useState<string>('-1')
 
