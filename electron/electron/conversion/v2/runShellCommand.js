@@ -18,6 +18,10 @@ function runFFmpegCommand(commandToExecute) {
     process.send({ type: 'stderr', data: data.toString() })
   })
 
+  ffmpegProcess.on('error', (err) => {
+    process.send({ type: 'error', data: err.toString() })
+  })
+
   ffmpegProcess.on('close', (code) => {
     if (isKilling) {
       isKilling = false

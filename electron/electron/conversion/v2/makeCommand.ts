@@ -1,3 +1,4 @@
+import { getParseFFmpegPath } from '../../utils'
 import path from 'path'
 
 interface FileToConvertType {
@@ -15,7 +16,8 @@ export function makeFfmpegCommand(
 ) {
   const { videoName, filePath, cutStart, cutEnd, volume, format } =
     fileToConvert
-  let commandToExecute = `ffmpeg -ss ${cutStart} `
+  const ffmpegPath = getParseFFmpegPath()
+  let commandToExecute = `${ffmpegPath} -ss ${cutStart} `
 
   if (cutEnd !== '00:00:00') {
     commandToExecute += `-to ${cutEnd} `

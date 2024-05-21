@@ -1,5 +1,7 @@
-import { exec } from 'child_process'
+import fs from 'node:fs'
+import { exec } from 'node:child_process'
 import { BrowserWindow, Menu, MenuItem, dialog, ipcMain } from 'electron'
+import { currentPlayFactoryConfigs, playFactoryConfigsPath } from '../utils'
 
 export function addFFmpegMenu() {
   const menu = Menu.getApplicationMenu()
@@ -24,8 +26,13 @@ export function addFFmpegMenu() {
         {
           label: 'Check version',
           click: () => {
-            console.log('Check version')
             checkFFmpegVersion()
+          },
+        },
+        {
+          label: 'Find in system',
+          click: () => {
+            findFFmpegBinary()
           },
         },
         {
@@ -33,13 +40,6 @@ export function addFFmpegMenu() {
           click: () => {
             // downloadFFmpeg()
             console.log('Download')
-          },
-        },
-        {
-          label: 'Find in system',
-          click: () => {
-            // installFFmpeg()
-            console.log('Find in system')
           },
         },
       ],
@@ -50,35 +50,43 @@ export function addFFmpegMenu() {
   }
 }
 
-function checkFFmpegVersion() {
-  const command = 'ffmpeg -version'
-  // const command =
-  //   'C:/Users/edson/Documents/Docs/ffmpeg-master-latest-win64-gpl/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe -version'
+export function checkFFmpegVersion(
+  ffmpegPath = currentPlayFactoryConfigs().ffmpegPath ?? 'ffmpeg',
+) {
+  const command = `${ffmpegPath} -version`
   exec(command, (error) => {
     const mainWindow = BrowserWindow.getAllWindows()[0]
     if (error !== null) {
-      mainWindow.webContents.send('ffmpeg-status', false)
+      mainWindow.webContents.send('ffmpeg-status', 'FFmpeg not found')
     } else {
-      mainWindow.webContents.send('ffmpeg-status', true)
+      savePathFFmpeg(ffmpegPath)
+      mainWindow.webContents.send('ffmpeg-status', 'FFmpeg correctly installed')
     }
   })
 }
 
-// Import config from file .json
-async function importConfig() {
+// Find FFmpeg binary
+function findFFmpegBinary() {
   const result = dialog.showOpenDialogSync({
     title: 'Find ffmpeg binary',
   })
   if (result === undefined || result.length === 0) return
   const path = result[0]
 
-  // const result = await dialog.showOpenDialog({ properties: ['openFile'] })
-  // if (result.canceled || result.filePaths.length === 0) return {}
-  // const path = result.filePaths[0]
-
-  console.log(path)
   const mainWindow = BrowserWindow.getAllWindows()[0]
-  mainWindow.webContents.send('ffmpeg-status', true)
+  if (path.endsWith('ffmpeg.exe')) {
+    checkFFmpegVersion(path)
+  } else {
+    mainWindow.webContents.send('ffmpeg-status', 'Invalid file')
+  }
+}
+
+// Save the path of FFmpeg
+function savePathFFmpeg(path: string) {
+  fs.writeFileSync(
+    playFactoryConfigsPath,
+    JSON.stringify({ ...currentPlayFactoryConfigs(), ffmpegPath: path }),
+  )
 }
 
 ipcMain.on('check-ffmpeg', (_event) => {
@@ -89,7 +97,6 @@ ipcMain.on('download-ffmpeg', (_event) => {
   console.log('Download FFmpeg')
 })
 
-ipcMain.on('find-ffmpeg', async (_event) => {
-  console.log('Find FFmpeg')
-  await importConfig()
+ipcMain.on('find-ffmpeg', (_event) => {
+  findFFmpegBinary()
 })

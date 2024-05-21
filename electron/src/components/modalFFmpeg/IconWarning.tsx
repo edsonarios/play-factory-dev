@@ -5,7 +5,7 @@ export function IconWarning() {
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
       fill="#eab308"
-      className="w-10 ml-2"
+      className="w-10 ml-3"
     >
       <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
       <g

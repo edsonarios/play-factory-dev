@@ -3,21 +3,29 @@ import { persist } from 'zustand/middleware'
 
 export interface FFmpegStoreType {
   isFFmpegInstalled: boolean
-  setIsFFmpegVersion: (isFFmpegInstalled: boolean) => void
+  setIsFFmpegInstalled: (isFFmpegInstalled: boolean) => void
 
   showModalStatus: boolean
   setShowModalStatus: (showModalStatus: boolean) => void
+
+  messageFFmpegError: string
+  setMessageFFmpegError: (messageError: string) => void
 }
 
 const storeFFmpeg: StateCreator<FFmpegStoreType> = (set) => ({
   isFFmpegInstalled: false,
-  setIsFFmpegVersion: (isFFmpegInstalled) => {
+  setIsFFmpegInstalled: (isFFmpegInstalled) => {
     set({ isFFmpegInstalled })
   },
 
   showModalStatus: false,
   setShowModalStatus: (showModalStatus) => {
     set({ showModalStatus })
+  },
+
+  messageFFmpegError: '',
+  setMessageFFmpegError: (messageFFmpegError) => {
+    set({ messageFFmpegError })
   },
 })
 

@@ -1,13 +1,13 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'node:path'
 import fs from 'node:fs'
-// import { cancelConversion, convert } from './conversion/v1/convert'
 import log from 'electron-log'
-import { type ISize } from './entities/size.entity'
+import { type IPlayFactoryConfig } from './entities/size.entity'
 import { type ChildProcess, fork } from 'node:child_process'
 import { makeFfmpegCommand } from './conversion/v2/makeCommand'
 import { getTotalDuration, parseProgress } from './conversion/v2/utils'
 import { addFFmpegMenu } from './components/menuFFmpeg'
+import { currentPlayFactoryConfigs, playFactoryConfigsPath } from './utils'
 
 // The built directory structure
 //
@@ -27,18 +27,15 @@ let win: BrowserWindow | null
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL
 
-const windowStatePath = path.join(
-  app.getPath('userData'),
-  'play-factory-state.json',
-)
-
 function createWindow() {
   // Load the previous state to set the window position and size
-  let windowState: ISize = {}
+  let playFactoryConfigs: IPlayFactoryConfig = {}
   try {
-    windowState = JSON.parse(fs.readFileSync(windowStatePath, 'utf-8'))
+    playFactoryConfigs = JSON.parse(
+      fs.readFileSync(playFactoryConfigsPath, 'utf-8'),
+    )
   } catch (err) {
-    windowState = { x: 0, y: 0, width: 800, height: 600 }
+    playFactoryConfigs = { x: 0, y: 0, width: 800, height: 600 }
   }
 
   win = new BrowserWindow({
@@ -51,8 +48,8 @@ function createWindow() {
       contextIsolation: true,
       webSecurity: false,
     },
-    x: windowState.x,
-    y: windowState.y,
+    x: playFactoryConfigs.x,
+    y: playFactoryConfigs.y,
   })
   win.maximize()
 
@@ -69,8 +66,14 @@ function createWindow() {
   }
   win.on('close', (_event) => {
     if (win !== null) {
+      // const currentPlayFactoryConfigs = JSON.parse(
+      //   fs.readFileSync(playFactoryConfigsPath, 'utf-8'),
+      // )
       const { x, y, width, height } = win.getBounds()
-      fs.writeFileSync(windowStatePath, JSON.stringify({ x, y, width, height }))
+      fs.writeFileSync(
+        playFactoryConfigsPath,
+        JSON.stringify({ ...currentPlayFactoryConfigs(), x, y, width, height }),
+      )
     }
     win = null
     app.quit()
@@ -131,7 +134,6 @@ ipcMain.on('start-conversion', (event, requestData) => {
     : path.join(__dirname, '../electron/conversion/v2/runShellCommand.js')
 
   ffmpegProcess = fork(modulePath)
-
   ffmpegProcess.send(command)
   let totalDuration = -1
   ffmpegProcess.on('message', (message: any) => {

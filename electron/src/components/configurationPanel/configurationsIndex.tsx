@@ -3,7 +3,6 @@ import DropDownComponent from './dropDown'
 import InputComponent from './input'
 import ButtonComponent from '@/components/configurationPanel/button'
 import { type FFmpegStoreType, useFFmpegStore } from '@/store/ffmpegStore'
-import { useEffect } from 'react'
 interface Options {
   name: string
   value: string
@@ -54,22 +53,9 @@ export default function ConfigurationComponent({
   setFormat,
   handleConvert,
 }: ConfigurationComponentProps) {
-  const { isFFmpegInstalled, setIsFFmpegVersion, setShowModalStatus } =
-    useFFmpegStore<FFmpegStoreType>((state) => state)
-
-  // Listen to the ffmpeg-status event
-  useEffect(() => {
-    const debugParams = async (_event: any, action: boolean) => {
-      setIsFFmpegVersion(action)
-      setShowModalStatus(true)
-    }
-
-    window.electron.receive('ffmpeg-status', debugParams)
-
-    return () => {
-      window.electron.removeListener('ffmpeg-status', debugParams)
-    }
-  }, [])
+  const { isFFmpegInstalled } = useFFmpegStore<FFmpegStoreType>(
+    (state) => state,
+  )
 
   return (
     <div className="pt-4">

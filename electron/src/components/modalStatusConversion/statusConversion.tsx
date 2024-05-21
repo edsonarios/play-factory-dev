@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { ProgressBar } from './progressbar'
 import ButtonComponent from '../configurationPanel/button'
-enum EstatusConvertion {
+export enum EstatusConvertion {
   Completed = 'Completed',
   ConversionCompleted = 'Conversion completed',
   ConversionFailed = 'Conversion failed',
@@ -9,16 +9,19 @@ enum EstatusConvertion {
   Close = 'Close',
   Cancel = 'Cancel',
   Canceled = 'Canceled',
+  Hidden = 'Hidden',
 }
 export default function StatusConversion({ filePath }: { filePath: string }) {
   const timeToHiddenProgressBar = 1000
-  const [statusConvertion, setStatusConvertion] = useState<string>('-1')
+  const [statusConvertion, setStatusConvertion] = useState<string>(
+    EstatusConvertion.Hidden,
+  )
 
   const statusProgress = useCallback((_event: any, action: string) => {
     setStatusConvertion(action)
     if (action === EstatusConvertion.Completed) {
       setTimeout(() => {
-        setStatusConvertion('-1')
+        setStatusConvertion(EstatusConvertion.Hidden)
       }, timeToHiddenProgressBar)
     }
   }, [])
@@ -31,12 +34,17 @@ export default function StatusConversion({ filePath }: { filePath: string }) {
   }, [])
 
   const handledButtonProgressBar = () => {
+    if (statusConvertion === EstatusConvertion.ConversionFailed) {
+      setStatusConvertion(EstatusConvertion.Hidden)
+      return
+    }
+
     window.electron.sendEvent('cancel-conversion')
-    setStatusConvertion('-1')
+
     if (statusConvertion !== EstatusConvertion.Completed) {
-      setStatusConvertion('-2')
+      setStatusConvertion(EstatusConvertion.Cancel)
       setTimeout(() => {
-        setStatusConvertion('-1')
+        setStatusConvertion(EstatusConvertion.Hidden)
       }, timeToHiddenProgressBar)
     }
   }
@@ -45,7 +53,7 @@ export default function StatusConversion({ filePath }: { filePath: string }) {
   useEffect(() => {
     const handleKeyPress = (event: any) => {
       if (event.key === 'Escape') {
-        setStatusConvertion('-1')
+        setStatusConvertion(EstatusConvertion.Hidden)
       }
     }
     window.addEventListener('keydown', handleKeyPress)
@@ -56,7 +64,7 @@ export default function StatusConversion({ filePath }: { filePath: string }) {
 
   return (
     <div>
-      {statusConvertion !== '-1' && (
+      {statusConvertion !== EstatusConvertion.Hidden && (
         <div
           className={
             'fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30'
@@ -73,7 +81,7 @@ export default function StatusConversion({ filePath }: { filePath: string }) {
                 ? EstatusConvertion.ConversionCompleted
                 : statusConvertion === EstatusConvertion.ConversionFailed
                   ? EstatusConvertion.ConversionFailed
-                  : statusConvertion === '-2'
+                  : statusConvertion === EstatusConvertion.Cancel
                     ? EstatusConvertion.Canceled
                     : EstatusConvertion.Converting}
             </p>
@@ -81,10 +89,10 @@ export default function StatusConversion({ filePath }: { filePath: string }) {
             <ProgressBar
               value={
                 statusConvertion === EstatusConvertion.Completed
-                  ? 100
+                  ? '100'
                   : statusConvertion === EstatusConvertion.ConversionFailed
-                    ? -1
-                    : parseInt(statusConvertion)
+                    ? EstatusConvertion.Cancel
+                    : statusConvertion
               }
             />
             <ButtonComponent
