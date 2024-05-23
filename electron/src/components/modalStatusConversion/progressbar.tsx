@@ -7,18 +7,20 @@ export function ProgressBar({ value }: { value: string }) {
         className={`h-6 rounded-full text-center text-white
         ${
           value === EstatusConvertion.Hidden ||
-          value === EstatusConvertion.Cancel
+          value === EstatusConvertion.Cancel ||
+          value === 'error'
             ? 'bg-red-200'
             : value === '100'
               ? 'bg-green-600'
               : 'bg-plyrColor'
         } `}
         style={{
-          width: `${value === EstatusConvertion.Hidden ? 100 : value}%`,
+          width: `${value === EstatusConvertion.Hidden || value === 'error' ? 100 : value}%`,
         }}
       >
         {value === EstatusConvertion.Hidden ||
-        value === EstatusConvertion.Cancel
+        value === EstatusConvertion.Cancel ||
+        value === 'error'
           ? ''
           : value + '%'}
       </div>

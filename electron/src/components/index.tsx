@@ -8,6 +8,7 @@ import { Ply } from './player/player'
 import { TabHeader } from './player/tabHeader'
 import StatusConversion from './modalStatusConversion/statusConversion'
 import StatusFFmpeg from './modalFFmpeg/statusFFmpeg'
+import StatusDownload from './modalFFmpeg/statusDownload'
 
 interface ElectronAPI {
   send: (channel: string, data: any) => void
@@ -365,6 +366,7 @@ export default function IndexComponent() {
       </div>
       <StatusConversion filePath={filePath} />
       <StatusFFmpeg />
+      <StatusDownload />
     </div>
   )
 }
