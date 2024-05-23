@@ -1,13 +1,14 @@
-import { useState } from 'react'
 import './App.css'
+import Conversor from './components/player-video'
 
 function App () {
-  const [count, setCount] = useState(0)
-
   return (
     <>
       <div>
-        <h1>Conversor</h1>
+        <div className="flex justify-center">
+          <h1 className="text-4xl font-bold my-4">Video Conversor</h1>
+        </div>
+        <Conversor />
       </div>
     </>
   )
