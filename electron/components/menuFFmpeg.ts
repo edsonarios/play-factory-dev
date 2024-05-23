@@ -47,6 +47,7 @@ export function addFFmpegMenu() {
           label: 'Download FFmpeg',
           click: () => {
             // downloadFFmpeg()
+            checkSO()
             console.log('Download')
           },
         },
@@ -55,6 +56,18 @@ export function addFFmpegMenu() {
     menu.insert(1, newMenuFfmpeg)
 
     Menu.setApplicationMenu(menu)
+  }
+}
+
+function checkSO() {
+  const so = process.platform
+  console.log(so)
+  if (so === 'win32') {
+    return 'win'
+  } else if (so === 'darwin') {
+    return 'mac'
+  } else {
+    return 'linux'
   }
 }
 
@@ -147,7 +160,7 @@ async function unzipFile(zipPath: string, outputPath: string, onProgress: any) {
 
   for (const entry of zipEntries) {
     const entryPath = path.join(outputPath, entry.entryName)
-    if (entry.isDirectory === true) {
+    if (entry.isDirectory) {
       fs.mkdirSync(entryPath, { recursive: true })
     } else {
       fs.writeFileSync(entryPath, entry.getData())
