@@ -32,7 +32,7 @@ function createWindow() {
   let playFactoryConfigs: IPlayFactoryConfig = {}
   try {
     playFactoryConfigs = JSON.parse(
-      fs.readFileSync(playFactoryConfigsPath, 'utf-8'),
+      fs.readFileSync(playFactoryConfigsPath(), 'utf-8'),
     )
   } catch (err) {
     playFactoryConfigs = { x: 0, y: 0, width: 800, height: 600 }
@@ -66,12 +66,9 @@ function createWindow() {
   }
   win.on('close', (_event) => {
     if (win !== null) {
-      // const currentPlayFactoryConfigs = JSON.parse(
-      //   fs.readFileSync(playFactoryConfigsPath, 'utf-8'),
-      // )
       const { x, y, width, height } = win.getBounds()
       fs.writeFileSync(
-        playFactoryConfigsPath,
+        playFactoryConfigsPath(),
         JSON.stringify({ ...currentPlayFactoryConfigs(), x, y, width, height }),
       )
     }

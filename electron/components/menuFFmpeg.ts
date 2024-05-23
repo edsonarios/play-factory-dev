@@ -105,7 +105,7 @@ function findFFmpegBinary() {
 // Save the path of FFmpeg
 function savePathFFmpeg(path: string) {
   fs.writeFileSync(
-    playFactoryConfigsPath,
+    playFactoryConfigsPath(),
     JSON.stringify({ ...currentPlayFactoryConfigs(), ffmpegPath: path }),
   )
 }

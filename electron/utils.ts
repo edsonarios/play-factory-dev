@@ -3,13 +3,20 @@ import { app } from 'electron'
 import fs from 'node:fs'
 import { type IPlayFactoryConfig } from './entities/size.entity'
 
-export const playFactoryConfigsPath = path.join(
-  app.getPath('userData'),
-  'play-factory-state.json',
-)
+export const playFactoryConfigsPath = (): string => {
+  const configPath = path.join(
+    app.getPath('userData'),
+    'play-factory-config.json',
+  )
+
+  if (!fs.existsSync(configPath)) {
+    fs.writeFileSync(configPath, JSON.stringify({}), 'utf-8')
+  }
+  return configPath
+}
 
 export function currentPlayFactoryConfigs(): IPlayFactoryConfig {
-  return JSON.parse(fs.readFileSync(playFactoryConfigsPath, 'utf-8'))
+  return JSON.parse(fs.readFileSync(playFactoryConfigsPath(), 'utf-8'))
 }
 
 export function getParseFFmpegPath(): string {
