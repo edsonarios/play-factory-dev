@@ -8,6 +8,7 @@ import { makeFfmpegCommand } from './conversion/v2/makeCommand'
 import { getTotalDuration, parseProgress } from './conversion/v2/utils'
 import { addFFmpegMenu } from './components/menuFFmpeg'
 import { currentPlayFactoryConfigs, playFactoryConfigsPath } from './utils'
+import { addMenuFile } from './components/menuFile'
 
 // The built directory structure
 //
@@ -76,6 +77,7 @@ function createWindow() {
     app.quit()
   })
   addFFmpegMenu()
+  addMenuFile()
 }
 
 // Quit when all windows are closed, except on macOS. There, it's common

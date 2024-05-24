@@ -9,6 +9,7 @@ import { TabHeader } from './player/tabHeader'
 import StatusConversion from './modalStatusConversion/statusConversion'
 import StatusFFmpeg from './modalFFmpeg/statusFFmpeg'
 import StatusDownload from './modalFFmpeg/statusDownload'
+import { OpenFile } from './openFile'
 
 interface ElectronAPI {
   send: (channel: string, data: any) => void
@@ -367,6 +368,15 @@ export default function IndexComponent() {
       <StatusConversion filePath={filePath} />
       <StatusFFmpeg />
       <StatusDownload />
+      <OpenFile
+        setCutEnd={setCutEnd}
+        setCutStart={setCutStart}
+        setVolume={setVolume}
+        setFormat={setFormat}
+        setVideoName={setVideoName}
+        setVideoSrc={setVideoSrc}
+        setFilePath={setFilePath}
+      />
     </div>
   )
 }

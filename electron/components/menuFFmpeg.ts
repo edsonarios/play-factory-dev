@@ -93,9 +93,8 @@ function findFFmpegBinary() {
   })
   if (result === undefined || result.length === 0) return
   const path = result[0]
-
   const mainWindow = BrowserWindow.getAllWindows()[0]
-  if (path.endsWith('ffmpeg.exe')) {
+  if (path.endsWith('ffmpeg.exe') || path.endsWith('ffmpeg')) {
     checkFFmpegVersion(path)
   } else {
     mainWindow.webContents.send('ffmpeg-status', 'Invalid file')
