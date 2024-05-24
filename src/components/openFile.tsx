@@ -42,7 +42,14 @@ export function OpenFile({
   // Event key escape to close the modal
   useEffect(() => {
     const handleKeyPress = (event: any) => {
-      if (event.key === 'o' && event.ctrlKey === true) {
+      if (
+        event.target.tagName === 'INPUT' ||
+        event.target.tagName === 'TEXTAREA' ||
+        event.target.tagName === 'SELECT'
+      ) {
+        return
+      }
+      if (event.key === 'o') {
         window.electron.sendEvent('open-file')
       }
     }
