@@ -34,16 +34,22 @@ export function makeFfmpegCommand(
   if (format.length > 0) {
     const baseName = path.basename(videoName, path.extname(videoName))
     const outputFileName = `${baseName}-converted.${format}`
-    commandToExecute += `"${filePathWithoutName}\\${outputFileName}" `
+    // commandToExecute += `"${filePathWithoutName}\\${outputFileName}" `
+    commandToExecute += path.join(filePathWithoutName, outputFileName)
   } else {
     if (volume.length === 0) {
       commandToExecute += '-c copy '
     }
     const baseName = path.basename(videoName, path.extname(videoName))
     const extName = path.extname(videoName)
-    commandToExecute += `"${filePathWithoutName}\\${baseName}-converted${extName}" `
+    // commandToExecute += `"${filePathWithoutName}\\${baseName}-converted${extName}" `
+    commandToExecute += path.join(
+      filePathWithoutName,
+      `${baseName}-converted${extName}`,
+    )
   }
 
-  commandToExecute += '-y'
+  commandToExecute += ' -y'
+  console.log(commandToExecute)
   return commandToExecute
 }

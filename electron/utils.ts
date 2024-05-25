@@ -38,3 +38,14 @@ export function formatBytes(bytes: number, decimals = 2) {
 
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
 }
+
+export function checkSO() {
+  const so = process.platform
+  if (so === 'win32') {
+    return 'win'
+  } else if (so === 'darwin') {
+    return 'mac'
+  } else {
+    return 'linux'
+  }
+}

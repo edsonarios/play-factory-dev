@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import { exec } from 'node:child_process'
 import { BrowserWindow, Menu, MenuItem, app, dialog, ipcMain } from 'electron'
 import {
+  checkSO,
   currentPlayFactoryConfigs,
   formatBytes,
   playFactoryConfigsPath,
@@ -56,18 +57,6 @@ export function addFFmpegMenu() {
     menu.insert(1, newMenuFfmpeg)
 
     Menu.setApplicationMenu(menu)
-  }
-}
-
-function checkSO() {
-  const so = process.platform
-  console.log(so)
-  if (so === 'win32') {
-    return 'win'
-  } else if (so === 'darwin') {
-    return 'mac'
-  } else {
-    return 'linux'
   }
 }
 
