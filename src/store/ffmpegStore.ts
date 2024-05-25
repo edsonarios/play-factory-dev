@@ -1,5 +1,13 @@
 import { type StateCreator, create } from 'zustand'
 import { persist } from 'zustand/middleware'
+export interface IStatusDownload {
+  message: string
+  percentage: number
+  totalLength: string
+  elapsedLength: string
+  completed: boolean
+  error: string
+}
 
 export interface FFmpegStoreType {
   isFFmpegInstalled: boolean
@@ -10,6 +18,9 @@ export interface FFmpegStoreType {
 
   messageFFmpegError: string
   setMessageFFmpegError: (messageError: string) => void
+
+  statusDownload: IStatusDownload | null
+  setStatusDownload: (statusDownload: IStatusDownload | null) => void
 }
 
 const storeFFmpeg: StateCreator<FFmpegStoreType> = (set) => ({
@@ -26,6 +37,11 @@ const storeFFmpeg: StateCreator<FFmpegStoreType> = (set) => ({
   messageFFmpegError: '',
   setMessageFFmpegError: (messageFFmpegError) => {
     set({ messageFFmpegError })
+  },
+
+  statusDownload: null,
+  setStatusDownload: (statusDownload) => {
+    set({ statusDownload })
   },
 })
 

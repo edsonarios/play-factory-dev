@@ -14,6 +14,7 @@ export default function StatusFFmpeg() {
     setIsFFmpegInstalled,
     setMessageFFmpegError,
     messageFFmpegError,
+    setStatusDownload,
   } = useFFmpegStore<FFmpegStoreType>((state) => state)
 
   // Listen to the ffmpeg-status event
@@ -94,6 +95,14 @@ export default function StatusFFmpeg() {
                   <ButtonComponent
                     label="Download FFmpeg"
                     onClick={() => {
+                      setStatusDownload({
+                        error: '',
+                        message: 'Downloading FFmpeg...',
+                        percentage: 0,
+                        totalLength: '0',
+                        elapsedLength: '0',
+                        completed: false,
+                      })
                       window.electron.sendEvent('download-ffmpeg')
                     }}
                     style="py-1 w-16 text-xs"

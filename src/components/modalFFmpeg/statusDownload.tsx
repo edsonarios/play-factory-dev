@@ -1,17 +1,14 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { ProgressBar } from '../modalStatusConversion/progressbar'
-interface IStatusDownload {
-  message: string
-  percentage: number
-  totalLength: string
-  elapsedLength: string
-  completed: boolean
-  error: string
-}
+import {
+  type FFmpegStoreType,
+  useFFmpegStore,
+  type IStatusDownload,
+} from '@/store/ffmpegStore'
 
 export default function StatusDownload() {
-  const [statusDownload, setStatusDownload] = useState<IStatusDownload | null>(
-    null,
+  const { statusDownload, setStatusDownload } = useFFmpegStore<FFmpegStoreType>(
+    (state) => state,
   )
 
   const statusProgress = useCallback((_event: any, action: IStatusDownload) => {
