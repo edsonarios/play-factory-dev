@@ -47,7 +47,7 @@ export function addFFmpegMenu() {
           label: 'Download FFmpeg',
           click: () => {
             // downloadFFmpeg()
-            checkSO()
+            // checkSO()
             console.log('Download')
           },
         },
@@ -74,6 +74,7 @@ function checkSO() {
 export function checkFFmpegVersion(
   ffmpegPath = currentPlayFactoryConfigs().ffmpegPath ?? 'ffmpeg',
 ) {
+  console.log(ffmpegPath)
   const command = `${ffmpegPath} -version`
   exec(command, (error) => {
     const mainWindow = BrowserWindow.getAllWindows()[0]
@@ -183,24 +184,41 @@ async function untarFile(
   zipPath: string,
   outputPath: string,
   progressDataObjet: IStatusDownload,
+  checkFFmpegPath: string,
 ) {
-  const mainWindow = BrowserWindow.getAllWindows()[0]
-  const commandToExecute = `tar -xf ${zipPath} -C ${outputPath}`
-  const ffmpegProcess = exec(commandToExecute)
+  // Create output directory
+  exec(`mkdir ${outputPath}`)
 
+  const mainWindow = BrowserWindow.getAllWindows()[0]
+  const commandToExecute = `tar -xvf ${zipPath} -C ${outputPath}`
+
+  const ffmpegProcess = exec(commandToExecute)
   ffmpegProcess.stderr?.on('data', (data) => {
     console.log(data)
-    mainWindow?.webContents.send('download-ffmpeg-status', data)
+    // mainWindow?.webContents.send('download-ffmpeg-status', data)
+  })
+  let mockProgress = 0
+  ffmpegProcess.stdout?.on('data', (data) => {
+    if (mockProgress <= 90) {
+      mockProgress++
+    }
+    mainWindow?.webContents.send('download-ffmpeg-status', {
+      ...progressDataObjet,
+      message: 'Extracting FFmpeg...',
+      percentage: mockProgress,
+      totalLength: 100,
+      elapsedLength: mockProgress,
+    })
   })
 
-  ffmpegProcess.on('close', (code) => {
-    console.log(code)
+  ffmpegProcess.on('close', async (code) => {
     if (code === 0) {
       mainWindow?.webContents.send('download-ffmpeg-status', {
         ...progressDataObjet,
         message: 'FFmpeg downloaded and extracted successfully',
         completed: true,
       })
+      checkFFmpegVersion(checkFFmpegPath)
     } else {
       mainWindow?.webContents.send('download-ffmpeg-status', {
         ...progressDataObjet,
@@ -214,18 +232,21 @@ ipcMain.on('download-ffmpeg', async (_event) => {
   const os = checkSO()
   let releaseName = ''
   let url = ''
+  let ffmpegExtension = ''
   if (os === 'win') {
     releaseName = 'ffmpeg-n7.0-latest-win64-lgpl-7.0'
     url = `https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/${releaseName}.zip`
+    ffmpegExtension = 'ffmpeg.zip'
   }
   if (os === 'linux') {
     releaseName = 'ffmpeg-n7.0-latest-linux64-lgpl-7.0'
     url = `https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/${releaseName}.tar.xz`
+    ffmpegExtension = 'ffmpeg.tar.xz'
   }
 
   const outputPath = app.isPackaged
-    ? path.join(process.resourcesPath, 'ffmpeg.zip')
-    : path.join(__dirname, 'ffmpeg.zip')
+    ? path.join(process.resourcesPath, ffmpegExtension)
+    : path.join(__dirname, ffmpegExtension)
 
   const mainWindow = BrowserWindow.getAllWindows()[0]
   let progressDataObjet: IStatusDownload = {
@@ -239,11 +260,9 @@ ipcMain.on('download-ffmpeg', async (_event) => {
   try {
     await downloadFile(url, outputPath, (progressData: IStatusDownload) => {
       progressDataObjet = progressData
-      console.log(progressDataObjet)
       mainWindow?.webContents.send('download-ffmpeg-status', progressDataObjet)
     })
 
-    console.log(progressDataObjet)
     mainWindow?.webContents.send('download-ffmpeg-status', {
       ...progressDataObjet,
       message: 'FFmpeg downloaded successfully',
@@ -255,8 +274,9 @@ ipcMain.on('download-ffmpeg', async (_event) => {
       ? path.join(process.resourcesPath, 'ffmpeg')
       : path.join(__dirname, 'ffmpeg')
 
-    console.log(unzipPath)
+    const checkFFmpegPath = path.join(unzipPath, releaseName, 'bin', 'ffmpeg')
     if (os === 'win') {
+      console.log('Unzip')
       await unzipFile(
         outputPath,
         unzipPath,
@@ -266,21 +286,18 @@ ipcMain.on('download-ffmpeg', async (_event) => {
           mainWindow?.webContents.send('download-ffmpeg-status', progressData)
         },
       )
+      mainWindow?.webContents.send('download-ffmpeg-status', {
+        ...progressDataObjet,
+        message: 'FFmpeg downloaded and extracted successfully',
+        completed: true,
+      })
+      checkFFmpegVersion(checkFFmpegPath)
     }
     if (os === 'linux') {
-      await untarFile(outputPath, unzipPath, progressDataObjet)
+      console.log('Untar')
+      console.log(outputPath, unzipPath, progressDataObjet)
+      await untarFile(outputPath, unzipPath, progressDataObjet, checkFFmpegPath)
     }
-
-    mainWindow?.webContents.send('download-ffmpeg-status', {
-      ...progressDataObjet,
-      message: 'FFmpeg downloaded and extracted successfully',
-      completed: true,
-    })
-
-    const relativePathAux = path.join(unzipPath, releaseName, 'bin', 'ffmpeg')
-
-    console.log(relativePathAux)
-    checkFFmpegVersion(relativePathAux)
   } catch (error: any) {
     console.log('Download error', error.message)
     mainWindow?.webContents.send('download-ffmpeg-status', {
