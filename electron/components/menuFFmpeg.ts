@@ -11,6 +11,11 @@ import path from 'node:path'
 import axios from 'axios'
 import { type IStatusDownload } from '../entities/statusDownload.entity'
 import AdmZip from 'adm-zip'
+import {
+  ffmpegFileExtension,
+  releaseFFmpegName,
+  urlFFmpegToDownload,
+} from '../releases.constants'
 
 export function addFFmpegMenu() {
   const menu = Menu.getApplicationMenu()
@@ -46,10 +51,8 @@ export function addFFmpegMenu() {
         },
         {
           label: 'Download FFmpeg',
-          click: () => {
-            // downloadFFmpeg()
-            // checkSO()
-            console.log('Download')
+          click: async () => {
+            await DownloadAndExtractedFFmpeg()
           },
         },
       ],
@@ -63,7 +66,6 @@ export function addFFmpegMenu() {
 export function checkFFmpegVersion(
   ffmpegPath = currentPlayFactoryConfigs().ffmpegPath ?? 'ffmpeg',
 ) {
-  console.log(ffmpegPath)
   const command = `${ffmpegPath} -version`
   exec(command, (error) => {
     const mainWindow = BrowserWindow.getAllWindows()[0]
@@ -216,26 +218,11 @@ async function untarFile(
     }
   })
 }
-
-ipcMain.on('download-ffmpeg', async (_event) => {
+async function DownloadAndExtractedFFmpeg() {
   const os = checkSO()
-  let releaseName = ''
-  let url = ''
-  let ffmpegExtension = ''
-  if (os === 'win') {
-    releaseName = 'ffmpeg-n7.0-latest-win64-lgpl-7.0'
-    url = `https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/${releaseName}.zip`
-    ffmpegExtension = 'ffmpeg.zip'
-  }
-  if (os === 'linux') {
-    releaseName = 'ffmpeg-n7.0-latest-linux64-lgpl-7.0'
-    url = `https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/${releaseName}.tar.xz`
-    ffmpegExtension = 'ffmpeg.tar.xz'
-  }
-
   const outputPath = app.isPackaged
-    ? path.join(process.resourcesPath, ffmpegExtension)
-    : path.join(__dirname, ffmpegExtension)
+    ? path.join(process.resourcesPath, ffmpegFileExtension)
+    : path.join(__dirname, ffmpegFileExtension)
 
   const mainWindow = BrowserWindow.getAllWindows()[0]
   let progressDataObjet: IStatusDownload = {
@@ -247,10 +234,17 @@ ipcMain.on('download-ffmpeg', async (_event) => {
     error: '',
   }
   try {
-    await downloadFile(url, outputPath, (progressData: IStatusDownload) => {
-      progressDataObjet = progressData
-      mainWindow?.webContents.send('download-ffmpeg-status', progressDataObjet)
-    })
+    await downloadFile(
+      urlFFmpegToDownload,
+      outputPath,
+      (progressData: IStatusDownload) => {
+        progressDataObjet = progressData
+        mainWindow?.webContents.send(
+          'download-ffmpeg-status',
+          progressDataObjet,
+        )
+      },
+    )
 
     mainWindow?.webContents.send('download-ffmpeg-status', {
       ...progressDataObjet,
@@ -263,15 +257,18 @@ ipcMain.on('download-ffmpeg', async (_event) => {
       ? path.join(process.resourcesPath, 'ffmpeg')
       : path.join(__dirname, 'ffmpeg')
 
-    const checkFFmpegPath = path.join(unzipPath, releaseName, 'bin', 'ffmpeg')
+    const checkFFmpegPath = path.join(
+      unzipPath,
+      releaseFFmpegName,
+      'bin',
+      'ffmpeg',
+    )
     if (os === 'win') {
-      console.log('Unzip')
       await unzipFile(
         outputPath,
         unzipPath,
         (progressData: IStatusDownload) => {
           progressDataObjet = progressData
-          console.log(progressData)
           mainWindow?.webContents.send('download-ffmpeg-status', progressData)
         },
       )
@@ -294,6 +291,10 @@ ipcMain.on('download-ffmpeg', async (_event) => {
       error: error.message,
     })
   }
+}
+
+ipcMain.on('download-ffmpeg', async (_event) => {
+  await DownloadAndExtractedFFmpeg()
 })
 
 ipcMain.on('check-ffmpeg', (_event) => {
