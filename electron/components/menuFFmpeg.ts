@@ -179,9 +179,49 @@ async function unzipFile(zipPath: string, outputPath: string, onProgress: any) {
   }
 }
 
+async function untarFile(
+  zipPath: string,
+  outputPath: string,
+  progressDataObjet: IStatusDownload,
+) {
+  const mainWindow = BrowserWindow.getAllWindows()[0]
+  const commandToExecute = `tar -xf ${zipPath} -C ${outputPath}`
+  const ffmpegProcess = exec(commandToExecute)
+
+  ffmpegProcess.stderr?.on('data', (data) => {
+    console.log(data)
+    mainWindow?.webContents.send('download-ffmpeg-status', data)
+  })
+
+  ffmpegProcess.on('close', (code) => {
+    console.log(code)
+    if (code === 0) {
+      mainWindow?.webContents.send('download-ffmpeg-status', {
+        ...progressDataObjet,
+        message: 'FFmpeg downloaded and extracted successfully',
+        completed: true,
+      })
+    } else {
+      mainWindow?.webContents.send('download-ffmpeg-status', {
+        ...progressDataObjet,
+        error: 'Error extracting FFmpeg',
+      })
+    }
+  })
+}
+
 ipcMain.on('download-ffmpeg', async (_event) => {
-  const releaseName = 'ffmpeg-n7.0-latest-win64-lgpl-7.0'
-  const url = `https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/${releaseName}.zip`
+  const os = checkSO()
+  let releaseName = ''
+  let url = ''
+  if (os === 'win') {
+    releaseName = 'ffmpeg-n7.0-latest-win64-lgpl-7.0'
+    url = `https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/${releaseName}.zip`
+  }
+  if (os === 'linux') {
+    releaseName = 'ffmpeg-n7.0-latest-linux64-lgpl-7.0'
+    url = `https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/${releaseName}.tar.xz`
+  }
 
   const outputPath = app.isPackaged
     ? path.join(process.resourcesPath, 'ffmpeg.zip')
@@ -216,11 +256,20 @@ ipcMain.on('download-ffmpeg', async (_event) => {
       : path.join(__dirname, 'ffmpeg')
 
     console.log(unzipPath)
-    await unzipFile(outputPath, unzipPath, (progressData: IStatusDownload) => {
-      progressDataObjet = progressData
-      console.log(progressData)
-      mainWindow?.webContents.send('download-ffmpeg-status', progressData)
-    })
+    if (os === 'win') {
+      await unzipFile(
+        outputPath,
+        unzipPath,
+        (progressData: IStatusDownload) => {
+          progressDataObjet = progressData
+          console.log(progressData)
+          mainWindow?.webContents.send('download-ffmpeg-status', progressData)
+        },
+      )
+    }
+    if (os === 'linux') {
+      await untarFile(outputPath, unzipPath, progressDataObjet)
+    }
 
     mainWindow?.webContents.send('download-ffmpeg-status', {
       ...progressDataObjet,
