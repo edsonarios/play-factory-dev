@@ -52,6 +52,7 @@ export function addFFmpegMenu() {
         {
           label: 'Download FFmpeg',
           click: async () => {
+            console.log('downloadin')
             await DownloadAndExtractedFFmpeg()
           },
         },
@@ -155,6 +156,7 @@ async function unzipFile(zipPath: string, outputPath: string, onProgress: any) {
       fs.mkdirSync(entryPath, { recursive: true })
     } else {
       fs.writeFileSync(entryPath, entry.getData())
+      fs.chmodSync(entryPath, '755')
       extractedSize += entry.header.size
       const percentage = Math.round((extractedSize / totalSize) * 100)
       if (percentage !== lastPercentage) {
@@ -257,13 +259,21 @@ async function DownloadAndExtractedFFmpeg() {
       ? path.join(process.resourcesPath, 'ffmpeg')
       : path.join(__dirname, 'ffmpeg')
 
-    const checkFFmpegPath = path.join(
+    const checkFFmpegPath = os === 'win' || os=== 'linux' ? path.join(
       unzipPath,
       releaseFFmpegName,
       'bin',
       'ffmpeg',
+    ): path.join(
+      unzipPath,
+      'ffmpeg',
     )
-    if (os === 'win') {
+    if (os === 'win' || os === 'mac') {
+      console.log('outputPath', outputPath)
+      console.log('unzipPath', unzipPath)
+      if (os === 'mac'){
+        exec(`mkdir ${unzipPath}`)
+      }
       await unzipFile(
         outputPath,
         unzipPath,
@@ -277,6 +287,7 @@ async function DownloadAndExtractedFFmpeg() {
         message: 'FFmpeg downloaded and extracted successfully',
         completed: true,
       })
+      console.log('checkFFmpegPath', checkFFmpegPath)
       checkFFmpegVersion(checkFFmpegPath)
     }
     if (os === 'linux') {

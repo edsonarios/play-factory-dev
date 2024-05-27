@@ -49,7 +49,7 @@ export const useFFmpegStore = create<FFmpegStoreType>()(
   persist(storeFFmpeg, {
     name: 'ffmpeg-storage',
     partialize: (state) => ({
-      isFFmpegInstalled: state.isFFmpegInstalled,
+      //isFFmpegInstalled: state.isFFmpegInstalled,
     }),
   }),
 )
