@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem } from 'electron'
 import path from 'node:path'
 import fs from 'node:fs'
 import log from 'electron-log'
@@ -9,6 +9,7 @@ import { getTotalDuration, parseProgress } from './conversion/v2/utils'
 import { addFFmpegMenu } from './components/menuFFmpeg'
 import { currentPlayFactoryConfigs, playFactoryConfigsPath } from './utils'
 import { addMenuFile } from './components/menuFile'
+import { autoUpdater } from 'electron-updater'
 
 // The built directory structure
 //
@@ -76,8 +77,11 @@ function createWindow() {
     win = null
     app.quit()
   })
+
+  // Update and add Menus
   addFFmpegMenu()
   addMenuFile()
+  addMenuHelp()
 }
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -166,3 +170,78 @@ ipcMain.on('cancel-conversion', () => {
     ffmpegProcess.send('kill')
   }
 })
+
+export function addMenuHelp() {
+  const menu = Menu.getApplicationMenu()
+  if (menu !== null) {
+    menu.items.forEach((item) => {
+      if (item.label === 'Help' && item.submenu !== undefined) {
+        item.submenu.insert(
+          0,
+          new MenuItem({
+            label: 'Check for updates',
+            click: () => {
+              checkForUpdates()
+            },
+          }),
+        )
+      }
+    })
+
+    Menu.setApplicationMenu(menu)
+  }
+}
+
+autoUpdater.autoDownload = false
+autoUpdater.autoInstallOnAppQuit = true
+// Check for updates
+function checkForUpdates() {
+  // Remove previous events
+  autoUpdater.removeAllListeners('update-available')
+  autoUpdater.removeAllListeners('update-not-available')
+  autoUpdater.removeAllListeners('update-downloaded')
+  autoUpdater.removeAllListeners('download-progress')
+
+  autoUpdater.on('update-available', () => {
+    void dialog
+      .showMessageBox({
+        type: 'info',
+        title: 'Update Available',
+        message: 'A new version is available. Do you want to update now?',
+        buttons: ['Update', 'Later'],
+        noLink: true,
+        cancelId: 1,
+      })
+      .then((result) => {
+        if (result.response === 0) {
+          void autoUpdater.downloadUpdate()
+        }
+      })
+  })
+
+  autoUpdater.on('update-not-available', () => {
+    void dialog.showMessageBox({
+      type: 'info',
+      title: 'No Updates',
+      message: 'Current version is up-to-date.',
+    })
+  })
+
+  autoUpdater.on('update-downloaded', () => {
+    void dialog
+      .showMessageBox({
+        type: 'info',
+        title: 'Update Ready',
+        message: 'Update downloaded, application will be quit for update...',
+      })
+      .then(() => {
+        autoUpdater.quitAndInstall()
+      })
+  })
+
+  autoUpdater.on('download-progress', (progressObj) => {
+    win?.webContents.send('update-download-progress', progressObj)
+  })
+
+  void autoUpdater.checkForUpdates()
+}

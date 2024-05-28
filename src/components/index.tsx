@@ -10,6 +10,7 @@ import StatusConversion from './modalStatusConversion/statusConversion'
 import StatusFFmpeg from './modalFFmpeg/statusFFmpeg'
 import StatusDownload from './modalFFmpeg/statusDownload'
 import { OpenFile } from './openFile'
+import ModalUpdateStatus from './modals/ModalUpdateStatus'
 
 interface ElectronAPI {
   send: (channel: string, data: any) => void
@@ -377,6 +378,7 @@ export default function IndexComponent() {
         setVideoSrc={setVideoSrc}
         setFilePath={setFilePath}
       />
+      <ModalUpdateStatus />
     </div>
   )
 }

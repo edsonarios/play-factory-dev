@@ -1,7 +1,18 @@
 {
-  "name": "electron-conversor",
+  "name": "play-factory",
   "private": true,
   "version": "1.0.0",
+  "description": "A simple electron app to convert files using ffmpeg",
+  "author": {
+    "name": "Edson Añawaya Rios",
+    "email": "edsonrios9@gmail.com"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/edsonarios/play-factory-dev",
+  "publish:": {
+    "provider": "github",
+    "releaseType": "release"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
@@ -16,6 +27,7 @@
     "autoprefixer": "^10.4.16",
     "axios": "^1.7.2",
     "electron-log": "^5.0.1",
+    "electron-updater": "^6.1.8",
     "plyr-react": "^5.3.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",

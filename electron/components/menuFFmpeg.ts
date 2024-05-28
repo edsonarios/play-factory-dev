@@ -20,20 +20,6 @@ import {
 export function addFFmpegMenu() {
   const menu = Menu.getApplicationMenu()
   if (menu !== null) {
-    menu.items.forEach((item) => {
-      if (item.label === 'Help' && item.submenu !== undefined) {
-        item.submenu.insert(
-          0,
-          new MenuItem({
-            label: 'Check for updates',
-            click: () => {
-              // checkForUpdates()
-              console.log('Check for updates')
-            },
-          }),
-        )
-      }
-    })
     const newMenuFfmpeg = new MenuItem({
       label: 'FFmpeg',
       submenu: [
@@ -52,7 +38,6 @@ export function addFFmpegMenu() {
         {
           label: 'Download FFmpeg',
           click: async () => {
-            console.log('downloadin')
             await DownloadAndExtractedFFmpeg()
           },
         },
@@ -191,7 +176,7 @@ async function untarFile(
     // mainWindow?.webContents.send('download-ffmpeg-status', data)
   })
   let mockProgress = 0
-  ffmpegProcess.stdout?.on('data', (data) => {
+  ffmpegProcess.stdout?.on('data', (_data) => {
     if (mockProgress <= 90) {
       mockProgress++
     }
@@ -259,19 +244,12 @@ async function DownloadAndExtractedFFmpeg() {
       ? path.join(process.resourcesPath, 'ffmpeg')
       : path.join(__dirname, 'ffmpeg')
 
-    const checkFFmpegPath = os === 'win' || os=== 'linux' ? path.join(
-      unzipPath,
-      releaseFFmpegName,
-      'bin',
-      'ffmpeg',
-    ): path.join(
-      unzipPath,
-      'ffmpeg',
-    )
+    const checkFFmpegPath =
+      os === 'win' || os === 'linux'
+        ? path.join(unzipPath, releaseFFmpegName, 'bin', 'ffmpeg')
+        : path.join(unzipPath, 'ffmpeg')
     if (os === 'win' || os === 'mac') {
-      console.log('outputPath', outputPath)
-      console.log('unzipPath', unzipPath)
-      if (os === 'mac'){
+      if (os === 'mac') {
         exec(`mkdir ${unzipPath}`)
       }
       await unzipFile(
@@ -287,12 +265,9 @@ async function DownloadAndExtractedFFmpeg() {
         message: 'FFmpeg downloaded and extracted successfully',
         completed: true,
       })
-      console.log('checkFFmpegPath', checkFFmpegPath)
       checkFFmpegVersion(checkFFmpegPath)
     }
     if (os === 'linux') {
-      console.log('Untar')
-      console.log(outputPath, unzipPath, progressDataObjet)
       await untarFile(outputPath, unzipPath, progressDataObjet, checkFFmpegPath)
     }
   } catch (error: any) {
