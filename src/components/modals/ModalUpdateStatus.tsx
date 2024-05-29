@@ -13,8 +13,20 @@ export default function ModalUpdateStatus() {
     null,
   )
 
+  const debug = useCallback((_event: any, action: IDowloadProgress) => {
+    console.log('debug: ', action)
+  }, [])
+
+  useEffect(() => {
+    window.electron.receive('debug', debug)
+    return () => {
+      window.electron.removeListener('debug', updateDownloadProgress)
+    }
+  }, [])
+
   const updateDownloadProgress = useCallback(
     (_event: any, action: IDowloadProgress) => {
+      console.log(action)
       setUpdateDownload(action)
     },
     [],
@@ -61,11 +73,11 @@ export default function ModalUpdateStatus() {
               {'Speed: '} {formatBytes(updateDownload.bytesPerSecond)}/s
             </p>
             <p className="text-xs">
-              {'Transferido: '}
+              {'Transferred: '}
               {formatBytes(updateDownload.transferred)} /{' '}
               {formatBytes(updateDownload.total)}
             </p>
-            <ProgressBar value={updateDownload.percent + ''} />
+            <ProgressBar value={updateDownload.percent.toFixed(0) + ''} />
           </section>
         </div>
       )}

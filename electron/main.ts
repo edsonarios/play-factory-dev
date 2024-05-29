@@ -11,6 +11,9 @@ import { currentPlayFactoryConfigs, playFactoryConfigsPath } from './utils'
 import { addMenuFile } from './components/menuFile'
 import { autoUpdater } from 'electron-updater'
 
+autoUpdater.autoDownload = false
+autoUpdater.autoInstallOnAppQuit = true
+
 // The built directory structure
 //
 // ├─┬─┬ dist
@@ -43,7 +46,7 @@ function createWindow() {
   win = new BrowserWindow({
     width: 1200,
     height: 800,
-    icon: path.join(process.env.VITE_PUBLIC, 'conversor.png'),
+    icon: path.join(process.env.VITE_PUBLIC, 'iconPlayFactory.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -192,8 +195,6 @@ export function addMenuHelp() {
   }
 }
 
-autoUpdater.autoDownload = false
-autoUpdater.autoInstallOnAppQuit = true
 // Check for updates
 function checkForUpdates() {
   // Remove previous events
@@ -214,7 +215,9 @@ function checkForUpdates() {
       })
       .then((result) => {
         if (result.response === 0) {
-          void autoUpdater.downloadUpdate()
+          autoUpdater.downloadUpdate().catch((error) => {
+            win?.webContents.send('debug', 'update-available: ' + error.message)
+          })
         }
       })
   })
@@ -243,5 +246,11 @@ function checkForUpdates() {
     win?.webContents.send('update-download-progress', progressObj)
   })
 
-  void autoUpdater.checkForUpdates()
+  autoUpdater.on('error', (error) => {
+    win?.webContents.send('debug', 'error: ' + error.message)
+  })
+
+  autoUpdater.checkForUpdates().catch((error) => {
+    win?.webContents.send('debug', 'checkForUpdates: ' + error.message)
+  })
 }
