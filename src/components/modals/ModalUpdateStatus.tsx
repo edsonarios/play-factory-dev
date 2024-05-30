@@ -13,16 +13,16 @@ export default function ModalUpdateStatus() {
     null,
   )
 
-  const debug = useCallback((_event: any, action: IDowloadProgress) => {
-    console.log('debug: ', action)
-  }, [])
+  // const debug = useCallback((_event: any, action: IDowloadProgress) => {
+  //   console.log('debug: ', action)
+  // }, [])
 
-  useEffect(() => {
-    window.electron.receive('debug', debug)
-    return () => {
-      window.electron.removeListener('debug', updateDownloadProgress)
-    }
-  }, [])
+  // useEffect(() => {
+  //   window.electron.receive('debug', debug)
+  //   return () => {
+  //     window.electron.removeListener('debug', updateDownloadProgress)
+  //   }
+  // }, [])
 
   const updateDownloadProgress = useCallback(
     (_event: any, action: IDowloadProgress) => {
