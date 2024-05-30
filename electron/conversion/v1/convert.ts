@@ -1,5 +1,6 @@
 import path from 'path'
 import { type ChildProcess, exec } from 'child_process'
+import { getParseFFmpegPath } from '../../utils'
 
 interface FileToConvertType {
   videoName: string
@@ -29,14 +30,11 @@ function parseProgress(stderr: string): number {
   return timeInSeconds
 }
 
-export function convert(
-  event: any,
-  fileToConvert: FileToConvertType,
-  // signal: AbortSignal,
-) {
+export function convert(event: any, fileToConvert: FileToConvertType) {
   const { videoName, filePath, cutStart, cutEnd, volume, format } =
     fileToConvert
-  let commandToExecute = `ffmpeg -ss ${cutStart} `
+  const ffmpegPath = getParseFFmpegPath()
+  let commandToExecute = `${ffmpegPath} -ss ${cutStart} `
 
   if (cutEnd !== '00:00:00') {
     commandToExecute += `-to ${cutEnd} `

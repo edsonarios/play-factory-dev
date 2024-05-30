@@ -50,5 +50,6 @@ export function makeFfmpegCommand(
   }
 
   commandToExecute += ' -y'
+  console.log(commandToExecute)
   return commandToExecute
 }
