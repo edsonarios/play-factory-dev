@@ -17,7 +17,7 @@ export function addMenuFile() {
         item.submenu.insert(
           0,
           new MenuItem({
-            label: 'Open File',
+            label: 'Open File (O)',
             click: () => {
               openFile()
             },

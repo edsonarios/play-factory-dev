@@ -269,14 +269,18 @@ export default function IndexComponent() {
   useEffect(() => {
     const handleFullScreen = (event: any) => {
       if (event.target !== undefined) {
-        const playerWrapper = document.querySelector(
-          '.plyr__video-wrapper',
-        ) as HTMLElement
+        // const playerWrapper = document.querySelector(
+        //   '.plyr__video-wrapper',
+        // ) as HTMLElement
+        const playerWrapper: NodeListOf<HTMLElement> =
+          document.querySelectorAll('.plyr__video-wrapper')
         if (playerWrapper !== null) {
-          playerWrapper.style.maxWidth = 'none'
-          playerWrapper.style.minWidth = 'none'
-          playerWrapper.style.maxHeight = 'none'
-          playerWrapper.style.minHeight = 'none'
+          playerWrapper.forEach((element) => {
+            element.style.maxWidth = 'none'
+            element.style.minWidth = 'none'
+            element.style.maxHeight = 'none'
+            element.style.minHeight = 'none'
+          })
         }
       }
     }
