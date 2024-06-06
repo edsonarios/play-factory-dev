@@ -50,9 +50,7 @@
   "linux": {
     "icon": "dist/iconPlayFactory.png",
     "target": [
-      "AppImage",
-      "deb",
-      "snap"
+      "deb"
     ],
     "category": "Utility",
     "artifactName": "${productName}-Linux-${version}.${ext}"
