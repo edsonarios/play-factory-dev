@@ -114,8 +114,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            release/**/Play-Mac-${{ github.ref_name }}-universal.dmg
-            release/**/Play-Mac-${{ github.ref_name }}-universal.blockmap
+            release/**/Play-Factory-Mac-${{ github.ref_name }}-universal.dmg
+            release/**/Play-Factory-Mac-${{ github.ref_name }}-universal.blockmap
             release/**/latest-mac.yml
         env:
           GITHUB_TOKEN: ${{ env.GH_TOKEN }}
