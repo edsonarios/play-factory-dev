@@ -207,9 +207,7 @@ async function untarFile(
 }
 async function DownloadAndExtractedFFmpeg() {
   const os = checkSO()
-  const outputPath = app.isPackaged
-    ? path.join(process.resourcesPath, ffmpegFileExtension)
-    : path.join(__dirname, ffmpegFileExtension)
+  const outputPath = path.join(app.getPath('home'), ffmpegFileExtension)
 
   const mainWindow = BrowserWindow.getAllWindows()[0]
   let progressDataObjet: IStatusDownload = {
@@ -240,10 +238,7 @@ async function DownloadAndExtractedFFmpeg() {
     })
 
     // Unzip FFmpeg
-    const unzipPath = app.isPackaged
-      ? path.join(process.resourcesPath, 'ffmpeg')
-      : path.join(__dirname, 'ffmpeg')
-
+    const unzipPath = path.join(app.getPath('home'), 'ffmpeg')
     const checkFFmpegPath =
       os === 'win' || os === 'linux'
         ? path.join(unzipPath, releaseFFmpegName, 'bin', 'ffmpeg')

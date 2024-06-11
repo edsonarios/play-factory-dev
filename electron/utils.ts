@@ -4,10 +4,7 @@ import fs from 'node:fs'
 import { type IPlayFactoryConfig } from './entities/size.entity'
 
 export const playFactoryConfigsPath = (): string => {
-  const configPath = path.join(
-    app.getPath('userData'),
-    'play-factory-config.json',
-  )
+  const configPath = path.join(app.getPath('home'), '.play-factory-config.json')
 
   if (!fs.existsSync(configPath)) {
     fs.writeFileSync(configPath, JSON.stringify({}), 'utf-8')
