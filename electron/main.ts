@@ -9,12 +9,12 @@ import { addMenuFile } from './components/menuFile'
 import { autoUpdater } from 'electron-updater'
 
 // v1
-// import { convert } from './conversion/v1/convert'
+import { convert } from './conversion/v1/convert'
 
 // v2
-import { makeFfmpegCommand } from './conversion/v2/makeCommand'
-import { getTotalDuration, parseProgress } from './conversion/v2/utils'
-import { type ChildProcess, fork } from 'node:child_process'
+// import { makeFfmpegCommand } from './conversion/v2/makeCommand'
+// import { getTotalDuration, parseProgress } from './conversion/v2/utils'
+// import { type ChildProcess, fork } from 'node:child_process'
 
 autoUpdater.autoDownload = false
 autoUpdater.autoInstallOnAppQuit = true
@@ -125,53 +125,53 @@ void app.whenReady().then(() => {
 log.info('Ready')
 
 // Conversion v1: Not possible cancel conversion
-// ipcMain.on('start-conversion', (event, requestData) => {
-//   convert(event, requestData)
-// })
+ipcMain.on('start-conversion', (event, requestData) => {
+  convert(event, requestData)
+})
 
 // Conversion v2: Possible cancel convercion, but just works in file "win-unpacked" using the installer file not works
-let ffmpegProcess: ChildProcess
-ipcMain.on('start-conversion', (event, requestData) => {
-  event.sender.send('electron-debug', 'start-conversion')
-  const command = makeFfmpegCommand(event, requestData)
-  const modulePath = app.isPackaged
-    ? path.join(process.resourcesPath, 'scripts/runShellCommand.js')
-    : path.join(__dirname, '../electron/conversion/v2/runShellCommand.js')
+// let ffmpegProcess: ChildProcess
+// ipcMain.on('start-conversion', (event, requestData) => {
+//   event.sender.send('electron-debug', 'start-conversion')
+//   const command = makeFfmpegCommand(event, requestData)
+//   const modulePath = app.isPackaged
+//     ? path.join(process.resourcesPath, 'scripts/runShellCommand.js')
+//     : path.join(__dirname, '../electron/conversion/v2/runShellCommand.js')
 
-  ffmpegProcess = fork(modulePath)
-  ffmpegProcess.send(command)
-  let totalDuration = -1
-  ffmpegProcess.on('message', (message: any) => {
-    if (message.type === 'stdout' || message.type === 'stderr') {
-      let getDuration = -1
-      if (totalDuration === -1) {
-        getDuration = getTotalDuration(message.data)
-      }
-      if (getDuration > 0) {
-        totalDuration = getDuration
-      }
-      const progress = parseProgress(message.data)
-      let progressPercent = 0
-      if (totalDuration > 0 && progress > 0) {
-        progressPercent = Math.floor((progress / totalDuration) * 100)
-        event.sender.send('conversion-status', progressPercent)
-      }
-    } else if (message.type === 'close') {
-      if (message.code === 0) {
-        event.sender.send('conversion-status', 'Completed')
-      } else {
-        event.sender.send('conversion-status', 'Conversion failed')
-      }
-      ffmpegProcess = undefined!
-    }
-  })
-})
+//   ffmpegProcess = fork(modulePath)
+//   ffmpegProcess.send(command)
+//   let totalDuration = -1
+//   ffmpegProcess.on('message', (message: any) => {
+//     if (message.type === 'stdout' || message.type === 'stderr') {
+//       let getDuration = -1
+//       if (totalDuration === -1) {
+//         getDuration = getTotalDuration(message.data)
+//       }
+//       if (getDuration > 0) {
+//         totalDuration = getDuration
+//       }
+//       const progress = parseProgress(message.data)
+//       let progressPercent = 0
+//       if (totalDuration > 0 && progress > 0) {
+//         progressPercent = Math.floor((progress / totalDuration) * 100)
+//         event.sender.send('conversion-status', progressPercent)
+//       }
+//     } else if (message.type === 'close') {
+//       if (message.code === 0) {
+//         event.sender.send('conversion-status', 'Completed')
+//       } else {
+//         event.sender.send('conversion-status', 'Conversion failed')
+//       }
+//       ffmpegProcess = undefined!
+//     }
+//   })
+// })
 
-ipcMain.on('cancel-conversion', () => {
-  if (ffmpegProcess !== undefined) {
-    ffmpegProcess.send('kill')
-  }
-})
+// ipcMain.on('cancel-conversion', () => {
+//   if (ffmpegProcess !== undefined) {
+//     ffmpegProcess.send('kill')
+//   }
+// })
 // -------------------------------------------------------
 
 export function addMenuHelp() {
