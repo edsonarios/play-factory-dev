@@ -51,17 +51,22 @@ export function convert(event: any, fileToConvert: FileToConvertType) {
   if (format.length > 0) {
     const baseName = path.basename(videoName, path.extname(videoName))
     const outputFileName = `${baseName}-converted.${format}`
-    commandToExecute += `"${filePathWithoutName}\\${outputFileName}" `
+    const newPath = path.join(filePathWithoutName, outputFileName)
+    commandToExecute += `"${newPath}"`
   } else {
     if (volume.length === 0) {
       commandToExecute += '-c copy '
     }
     const baseName = path.basename(videoName, path.extname(videoName))
     const extName = path.extname(videoName)
-    commandToExecute += `"${filePathWithoutName}\\${baseName}-converted${extName}" `
+    const newPath = path.join(
+      filePathWithoutName,
+      `${baseName}-converted${extName}`,
+    )
+    commandToExecute += `"${newPath}"`
   }
 
-  commandToExecute += '-y'
+  commandToExecute += ' -y'
   console.log(commandToExecute)
   const ffmpegProcess = exec(commandToExecute)
   let totalDuration = -1

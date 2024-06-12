@@ -120,4 +120,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ env.GH_TOKEN }}
           UPLOAD_URL: ${{ env.RELEASE_UPLOAD_URL }}
-
