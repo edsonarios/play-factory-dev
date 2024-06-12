@@ -3,5 +3,5 @@
 [Rules to build]
   - Update version in "package.json" and "index.html"
   - Check version conversion in "electron/main.ts", version 1 is release version, version 2 is just to unpacked version
-  - git tag -a 0.0.8 -m "0.0.8"
-  - git push origin 0.0.8
+  - git tag -a 0.0.9 -m "0.0.9"
+  - git push origin 0.0.9

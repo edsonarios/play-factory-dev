@@ -48,7 +48,7 @@
     "createStartMenuShortcut": true
   },
   "linux": {
-    "icon": "dist/iconPlayFactory.png",
+    "icon": "dist/icons",
     "target": [
       "deb"
     ],
